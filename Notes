@@ -1,0 +1,16 @@
+Todo:
+	Code to get card
+		If timeout, send an error message and render a error html.
+		Note : Store the timeout time in constants
+	Write error.html
+	Write submitrating.html
+	Write thankyou.html
+	Write start.html
+		Note : error.html and thankyou.html will have javascript that will redirect to start.html
+	Migrate the models!!!
+
+Note1:
+	Need to read roll numbers from cards in ReadView.get()
+	If User.DoesNotExist is raised, need to save RFID and Rollno before sending a error message.
+	This way, hostel authorities will be able to know which RFID is which person in the admin site - by looking at the roll numbers.
+

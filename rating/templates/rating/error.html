@@ -1,0 +1,31 @@
+{% extends "rating/base.html" %}
+
+{% block title %}Mess Rating{% endblock %}
+
+{% block css %}{% endblock %}
+
+{% block js %}
+	<script type="text/javascript">
+		$( document ).ready(function() {
+			setTimeout(function(){ window.location.href="{% url 'rating:start' %}" }, 2500);
+		});
+	</script>
+{% endblock %}
+
+{% block content %}
+    <div class="container" style="padding-top:50px; text-align:center;">
+        <h1>Sorry, An Error Occurred</h1><br/><br/><br/>
+        
+        <h2><strong><u>Details</u></strong></h2>
+        
+        <h3 style="color: red">
+		{% if messages %}
+			{% for message in messages %}
+				{{ message }}<br/>
+			{% endfor %}
+		{% endif %}
+		</h3>
+
+		<h2>Redirecting. Please wait.</h2>
+    </div>
+{% endblock %}

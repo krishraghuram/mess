@@ -1,0 +1,20 @@
+{% extends "rating/base.html" %}
+
+{% block title %}Mess Rating{% endblock %}
+
+{% block css %}{% endblock %}
+
+{% block js %}
+	<script type="text/javascript">
+		$( document ).ready(function() {
+			setTimeout(function(){ window.location.href="{% url 'rating:start' %}" }, 2500);
+		});
+	</script>
+{% endblock %}
+
+{% block content %}
+    <div class="container" style="padding-top:50px; text-align:center;">
+        <h1>Thank you</h1>
+        <h2>Redirecting. Please wait.</h2>
+    </div>
+{% endblock %}1

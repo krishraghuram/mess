@@ -22,3 +22,7 @@ hostels = (
 #Note : The values rating_low and rating_high are included in allowed values.
 rating_low = 1
 rating_high = 5
+
+#Time to wait for card after "Start" is pressed
+read_timeout = 5
+

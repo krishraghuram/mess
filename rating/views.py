@@ -10,6 +10,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import Activity
 from MFRC522python import util
+import multiprocessing
+import time
+import constants
 
 # Create your views here.
 
@@ -20,13 +23,20 @@ class ReadView(View):
 			logout(request)
 
 		#Try to read card.
-		try:
-			# rfid = util.readcard()
-			# rfid = "2294023316" #Raghu
-			rfid = "19711232168" #MAK
-		except Exception as e:
+		q = multiprocessing.Queue()
+		p = multiprocessing.Process(target=util.readcard, args=(q,))
+		p.start()
+		# Wait for timeout seconds or until process finishes
+		p.join(constants.read_timeout)
+		# If thread is still active
+		if p.is_alive():
+			# Terminate
+			p.terminate()
+			p.join()
 			messages.error(request, "Could not read card. Try again later.")
 			return render(request, 'rating/error.html')
+		#Get the card from queue
+		rfid = q.get()
 
 		#Search for card in Users
 		try:
@@ -56,7 +66,6 @@ class RatingView(View):
 	def post(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
 			#Get the rating
-			print request.POST
 			rating = request.POST.get("rating")
 			#Save it in activity
 			temp = Activity(user=request.user, rating=rating)

@@ -14,3 +14,8 @@ Note1:
 	If User.DoesNotExist is raised, need to save RFID and Rollno before sending a error message.
 	This way, hostel authorities will be able to know which RFID is which person in the admin site - by looking at the roll numbers.
 
+Notes : 
+	Admin site - check which stuff should be editable and which stuff should not be editable
+	New Card - automatic reg of rfid and rollno
+	Feedback once per meal
+	Django date and time is wrong

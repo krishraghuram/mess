@@ -20,7 +20,7 @@ class ActivityAdmin(admin.ModelAdmin):
 	fields = ('timestamp', 'get_profile_name', 'rating')
 	readonly_fields = ('timestamp', 'get_profile_name', 'rating')
 	list_display = ('timestamp', 'get_profile_name', 'rating')
-	
+
 	def has_add_permission(self, request):
 		return False
 
@@ -33,9 +33,7 @@ admin.site.register(Activity, ActivityAdmin)
 
 #Unregister the default django models
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
 from django.contrib.auth.models import Group
 
 admin.site.unregister(User)
 admin.site.unregister(Group)
-admin.site.unregister(Site)

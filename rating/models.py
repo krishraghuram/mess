@@ -19,7 +19,8 @@ class Profile(models.Model):
 	subscribed_hostel = models.CharField(max_length=20, choices=constants.hostels)
 
 	def __str__(self):
-		return '%s' % (self.name)
+		s = self.name+"("+self.rollno+")"
+		return '%s' % (s)
 
 
 

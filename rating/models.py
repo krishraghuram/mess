@@ -38,8 +38,8 @@ class Activity(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	rating = models.IntegerField(validators=[validate_ratingrange])
 
-	def get_profile(self):
-		return str(user.profile)
+	def get_profile_name(self):
+		return str(self.user.profile.name)
 
 	class Meta:
 		verbose_name="Activity"

@@ -16,8 +16,8 @@ def readcard(q):
         (status, TagType) = MIFAREReader.Request(MIFAREReader.PICC_REQIDL)
 
         # If a card is found
-        ### if status == MIFAREReader.MI_OK:
-            ### print("Card detected")
+        if status == MIFAREReader.MI_OK:
+            print("Card detected")
 
         # Get the UID of the card
         (status, uid) = MIFAREReader.Anticoll()
@@ -26,8 +26,8 @@ def readcard(q):
         if status == MIFAREReader.MI_OK:
 
             # Print UID
-            uid = str(uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
-            ### print("Card read UID: " + uid)
+            rfid = str(uid[0]) + str(uid[1]) + str(uid[2]) + str(uid[3])
+            print("RFID: " + rfid)
 
             # This is the default key for authentication
             key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
@@ -40,14 +40,14 @@ def readcard(q):
             text = [i for i in text if i is not '\x00']
             text = text[5:] + text[1:5] + text[0:1]
             rollno = ''.join(text)
-            ### print("Roll Number: "+text)
+            print("Roll Number: "+rollno)
 
             MIFAREReader.StopCrypto1()
 
             continue_reading = False
 
     #Put the card in queue
-    q.put((uid,rollno))
+    q.put((rfid,rollno))
     
     
     

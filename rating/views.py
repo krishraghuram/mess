@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .models import Activity
+from .models import Profile, Activity
 from MFRC522python import util
 import multiprocessing
 import time
@@ -36,13 +36,24 @@ class ReadView(View):
 			messages.error(request, "Could not read card. Try again later.")
 			return render(request, 'rating/error.html')
 		#Get the card from queue
-		rfid = q.get()
+		(rfid,rollno) = q.get()
 
 		#Search for card in Users
 		try:
 			user = User.objects.get(profile__rfid=rfid)
-		except User.DoesNotExist: #New User
-			messages.error(request, "User does not exist")
+		except User.DoesNotExist: #If new user
+			#Create a new user object for him
+			newuser = User.objects.create_user(username=rollno,password="USELESS_PASS")
+			#We do this so that the user's password can never be used. User's password for all purposes will be the RFID card.
+			newuser.set_unusable_password()
+			newuser.save()
+			#Profile object created automatically. Modify and save it.
+			newprofile = Profile.objects.get(user__username=rollno)
+			newprofile.rfid = rfid
+			newprofile.rollno = rollno
+			newprofile.save()
+			#Send a message to the user and render the error page
+			messages.error(request, "New user created. Contact hostel authorities for approval.")
 			return render(request, 'rating/error.html')
 
 		#Login the user

@@ -22,23 +22,14 @@ Notes :
 			RFID and Rollno should not be editable
 			Name, Resident Hostel and Subscribed Hostel should be editable
 			__str__ should be in "name(rollno)" format
+		Profile creation should be disabled
 		In Activity Object,
 			We need a hostel field which should be automatically taken from profile.subscribed_hostel
 			User should not be visible
 			User.Profile.name should be visible
 			Rating should not be editable
+		Activity creation should be disabled
 
 	New Card - automatic reg of rfid and rollno
-		Create User object
-			username will be roll number
-			password will be "uselesspass"
-			password will be set to be unusable
-			profile object will be automatically created
-		Modify Profile object and save
-			RFID will be rfid
-			Rollno will be rollno
-			Name will be empty
-			Resident Hostel will be empty
-			Subscribed Hostel will be empty
 	Feedback once per meal
 	Django date and time is wrong

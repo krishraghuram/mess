@@ -47,10 +47,8 @@ class ReadView(View):
 			#We do this so that the user's password can never be used. User's password for all purposes will be the RFID card.
 			newuser.set_unusable_password()
 			newuser.save()
-			#Profile object created automatically. Modify and save it.
-			newprofile = Profile.objects.get(user__username=rollno)
-			newprofile.rfid = rfid
-			newprofile.rollno = rollno
+			#Create a new profile object for the user
+			newprofile = Profile(user=newuser, rfid=rfid, rollno=rollno)
 			newprofile.save()
 			#Send a message to the user and render the error page
 			messages.error(request, "New user created. Contact hostel authorities for approval.")

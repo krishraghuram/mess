@@ -13,6 +13,7 @@ from MFRC522python import util
 import multiprocessing
 import time
 import constants
+from django.db import IntegrityError
 
 # Create your views here.
 
@@ -42,8 +43,11 @@ class ReadView(View):
 		try:
 			user = User.objects.get(profile__rfid=rfid)
 		except User.DoesNotExist: #If new user
-			#Create a new user object for him
-			newuser = User.objects.create_user(username=rollno,password="USELESS_PASS")
+			try:
+				#Create a new user object for him
+				newuser = User.objects.create_user(username=rollno,password="USELESS_PASS")
+			except IntegrityError: #Edge case that occurs when there is inconsistency between Users and Profiles.
+				newuser = User.objects.get(username=rollno)
 			#We do this so that the user's password can never be used. User's password for all purposes will be the RFID card.
 			newuser.set_unusable_password()
 			newuser.save()

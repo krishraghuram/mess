@@ -17,9 +17,10 @@ class ProfileAdmin(admin.ModelAdmin):
 
 
 class ActivityAdmin(admin.ModelAdmin):
-	fields = ('timestamp', 'get_profile_name', 'rating')
-	readonly_fields = ('timestamp', 'get_profile_name', 'rating')
+	fields = ('timestamp', 'get_profile_name', 'rating', 'hostel', 'meal')
+	readonly_fields = ('timestamp', 'get_profile_name', 'rating', 'hostel', 'meal')
 	list_display = ('timestamp', 'get_profile_name', 'rating')
+	list_filter = ('hostel','meal','rating')
 
 	def has_add_permission(self, request):
 		return False

@@ -1,35 +1,43 @@
+Done:
+	Admin Site 
+	New User Registration
+	
 Todo:
-	Code to get card
-		If timeout, send an error message and render a error html.
-		Note : Store the timeout time in constants
-	Write error.html
-	Write submitrating.html
-	Write thankyou.html
-	Write start.html
-		Note : error.html and thankyou.html will have javascript that will redirect to start.html
-	Migrate the models!!!
+	Django date and time is wrong - Only true fix is NTP :(
+		Call JK Ghosh or Guna sir.
 
-Note1:
-	Need to read roll numbers from cards in ReadView.get()
-	If User.DoesNotExist is raised, need to save RFID and Rollno before sending a error message.
-	This way, hostel authorities will be able to know which RFID is which person in the admin site - by looking at the roll numbers.
+	In RatingView
+		Only allow one feedback per meal.
+			Feedback time will be 
+				7-9:30 for breakfast
+				12-2:30 for lunch
+				8-10:30 for dinner
+		Ensure that those submitting feedback have a name, resident_hostel and subscribed_hostel. Else - tell them to contact hostel authorities.
 
-Notes : 
-	Admin site - check which stuff should be editable and which stuff should not be editable
-		User and Group objects should not be visible at all
-		In Profile object,
-			User should not be visible
-			RFID and Rollno should not be editable
-			Name, Resident Hostel and Subscribed Hostel should be editable
-		Profile creation should be disabled
-		In Activity Object,
-			timestamp should be displayed
-			User should not be visible, instead, str(User.Profile) should be visible
-			rating should be visible
-			Nothing should be editable
-		Activity creation should be disabled
+	In Activity, 
+		We need a hostel field which should be automatically taken from profile.subscribed_hostel.
+		We need a meal field which should will be used to ensure only one feedback per person per meal.
 
-	New Card - automatic reg of rfid and rollno
-	Feedback once per meal
-	Django date and time is wrong
-	In Activity, We need a hostel field which should be automatically taken from profile.subscribed_hostel
+	Make Pi Screen Work
+	Figure out how to multiplex SPI so that two devices can work
+
+Notes on User and Profile creation:
+	The user and profile creation process is a bit of jugaad and is not very scalable.
+	Both are created in ReadView in rating/views.py
+		User is created with
+			username=rollno read from ID card
+			password="USELESS_PASS"
+			user.set_unusable_password to ensure nobody can use passwords. User authentication for RFID systems is the ID card.
+		Profile is created with
+			user=newly created user
+			rfid=rfid read from ID Card
+			rollno=rollno read from ID Card
+		We are not showing User objects anywhere - neither to admin nor to users.
+		They are only used to simplify the internal work, namely - authentication and django sessions.
+		The profile object also has name, resident_hostel and subscribed_hostel which are initially empty. The hostel authorities have to manually fill this up.
+	
+	Initially, we used post_save signal to automatically create profiles. But that creates a problem, as profile.rfid and profile.rollno are both set to be unique. Thus, empty string "" is allowed once for both fields. But if we try to create another user object, the unique condition will raise an IntegrityError. 
+
+	Now, we handle user creation and profile creation both in rating/views.py, in ReadView. This is also not the best solution, as the responsibility of creating users falls into a particular app. 
+
+	The best solution is to probably create a "core" app which takes care of Users, RFID etc. and the have apps like mess_rating which only deal with the particular usage. But building that right now would be too much work without any guarantee of the work ever being deployed.

@@ -26,3 +26,9 @@ rating_high = 5
 #Time to wait for card after "Start" is pressed
 read_timeout = 5
 
+#Meal Enum
+meals = (
+	("Breakfast","Breakfast"),
+	("Lunch","Lunch"),
+	("Dinner","Dinner"),
+)

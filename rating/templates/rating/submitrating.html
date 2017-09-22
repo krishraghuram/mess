@@ -10,21 +10,21 @@
 	<div class="container" style="padding-top:50px; text-align:center;">
 		<h1>
 			{% if request.user.is_authenticated %}
-				Welcome '{{ request.user.profile.name }}'
+				Welcome {{ request.user.profile.name }}
 			{% endif %}
 		</h1>
 
 		<form method="post" action="{% url 'rating:rating' %}">
 			{% csrf_token %}
 			<div class="btn-grp" data-toggle="buttons">
-				<label class="btn btn-lg btn-primary active">
+				<label class="btn btn-lg btn-primary">
 					<input type="radio" name="rating" value="1">1
 				</label>
 				<label class="btn btn-lg btn-primary">
 					<input type="radio" name="rating" value="2">2
 				</label>
-				<label class="btn btn-lg btn-primary">
-					<input type="radio" name="rating" value="3">3
+				<label class="btn btn-lg btn-primary active">
+					<input type="radio" name="rating" value="3" checked>3
 				</label>
 				<label class="btn btn-lg btn-primary">
 					<input type="radio" name="rating" value="4">4
@@ -33,17 +33,6 @@
 					<input type="radio" name="rating" value="5">5
 				</label>
 			</div>
-<!-- 			<div class="btn-group" data-toggle="buttons">
-				<label class="btn btn-lg btn-primary active">
-					<input type="radio" name="rating" id="option1" autocomplete="off" checked> Radio 1 (preselected)
-				</label>
-				<label class="btn btn-lg btn-primary">
-					<input type="radio" name="rating" id="option2" autocomplete="off"> Radio 2
-				</label>
-				<label class="btn btn-lg btn-primary">
-				<input type="radio" name="rating" id="option3" autocomplete="off"> Radio 3
-				</label>
-			</div> -->
 			<br/>
 			<input type="submit" value="Submit" class="btn btn-lg btn-block btn-success">
 		</form>

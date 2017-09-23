@@ -41,3 +41,61 @@ Notes on User and Profile creation:
 	Now, we handle user creation and profile creation both in rating/views.py, in ReadView. This is also not the best solution, as the responsibility of creating users falls into a particular app. 
 
 	The best solution is to probably create a "core" app which takes care of Users, RFID etc. and the have apps like mess_rating which only deal with the particular usage. But building that right now would be too much work without any guarantee of the work ever being deployed.
+
+
+Notes on using 3.5 Inch Display :
+	The first link worked for me. However, just for the sake of completeness, I am giving other links which might be useful.
+	https://www.raspberrypi.org/forums/viewtopic.php?&t=139917
+	https://www.raspberrypi.org/forums/viewtopic.php?t=143581
+	http://www.waveshare.com/wiki/3.5inch_RPi_LCD_%28A%29
+	http://www.waveshare.com/3.5inch-rpi-lcd-a.htm
+
+Notes on simultaneously using 3.5 Inch Display and MFRC522 Reader:
+	MFRC522 Reader uses SPI to communicate with RPi.
+		We were using MFRC522-python and SPI-py which used the RPi's SPI Bus 0 Channel 0
+	The 3.5 Inch Screen also uses SPI to communicate with reader.
+		The 3.5 inch screen probably uses both channels of SPI Bus 0(one for LCD and one for touch)
+		Source : 
+			http://www.waveshare.com/3.5inch-rpi-lcd-a.htm 
+			(Look at interface subsection)
+		Even if we disable touch or something, the physical female header of the LCD screen is of 26 pins. We would have to physically break off a few pins to have space to connect wires to MFRC522 Reader.
+	RPI SPI
+		The raspberry pi has a SPI Bus 1 which has 3 channels. So, technically, we can let the 3.5 inch display use the SPI Bus 0(Both Channels), and have the MFRC522 reader use the SPI Bus 1.
+		At this point I read this,
+			https://projects.drogon.net/understanding-spi-on-the-raspberry-pi/
+			And this comment,
+			https://projects.drogon.net/understanding-spi-on-the-raspberry-pi/#comment-582
+		Which led me to think that there is no Kernel support for SPI Bus 1 which is there only in RPI 3.
+		Further, doing "ls /dev | grep spi" only gave me "spidev0.0" and "spidev0.1" - which are the two channels on bus 1. This strengthened my belief that SPI Bus 1 is not supported in Kernel.
+		Then, I found this,
+			https://raspberrypi.stackexchange.com/a/31934/73776
+			http://abyz.co.uk/rpi/pigpio/index.html
+			This PIGPIO Library allows control of GPIO pins. Yaaay.
+		I set it up, and then started searching for a library for MFRC522 reader that uses PIGPIO. 
+			I didnt get a proper library, but I got this code. 
+			https://www.raspberrypi.org/forums/viewtopic.php?p=1098821#p1098821
+			This guy wrote a module called RC522 which uses PIGPIO to talk to MFRC522 reader.
+			I downloaded this and tested it - and it worked.
+			NOTE : The RST Pin on MFRC522 Reader is useless. No need to connect it to anything.
+		At this point, I found this
+			http://elinux.org/RPi_SPI#Linux_driver
+			Adding dtoverlay=spi1-1cs  #1 chip select to /boot/config.txt and rebooting,
+			I got 3 new spidevices(ls /dev | grep spi). I now had, 
+				spidev0.0, spidev0.1, spidev1.0, spidev1.1, spidev1.2
+		I felt like a noob - and tried to use MFRC522-python + SPI-py with spidev1.0
+			It worked perfectly
+	Even after solving the SPI Problem, I was still not done.
+		Now, MFRC522 reader uses pins
+			MOSI     - 38
+			MISO     - 35
+			SCLK     - 40
+			SDA(CE2) - 36
+			GND      - 34
+		For 3v3, I am stuck. Because the only 3v3 pin is Pin 1 - and that is blocked by the 3.5 Inch Screen.
+		I quickly found a hack - I used Pin 33 - GPIO 13 as a 3v3 supply.
+			import RPi.GPIO as GPIO
+			GPIO.setmode(GPIO.BOARD)
+			GPIO.setup(33, GPIO.OUT)
+			GPIO.output(33, True)  #Supply 3v3 to MFRC522
+			GPIO.output(33, False) #Switch off MFRC522 Reader
+

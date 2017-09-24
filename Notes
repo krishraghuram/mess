@@ -2,24 +2,26 @@ Done:
 	Admin Site 
 	New User Registration
 	
-Todo:
 	Django date and time is wrong - Only true fix is NTP :(
 		Call JK Ghosh or Guna sir.
 
+	In Activity, 
+		We need a hostel field
+		We need a meal field
+
 	In RatingView
+		Activity.hostel should be taken from profile.subscribed_hostel of the logged in user
 		Only allow one feedback per meal.
 			Feedback time will be 
 				7-9:30 for breakfast
 				12-2:30 for lunch
 				8-10:30 for dinner
-		Ensure that those submitting feedback have a name, resident_hostel and subscribed_hostel. Else - tell them to contact hostel authorities.
-
-	In Activity, 
-		We need a hostel field which should be automatically taken from profile.subscribed_hostel.
-		We need a meal field which should will be used to ensure only one feedback per person per meal.
+		Ensure that those submitting feedback have a name, resident_hostel and subscribed_hostel. Else - tell them to contact hostel authorities. If we dont do this, people can submit feedback with just the automatic registration.
 
 	Make Pi Screen Work
 	Figure out how to multiplex SPI so that two devices can work
+
+
 
 Notes on User and Profile creation:
 	The user and profile creation process is a bit of jugaad and is not very scalable.
@@ -43,12 +45,15 @@ Notes on User and Profile creation:
 	The best solution is to probably create a "core" app which takes care of Users, RFID etc. and the have apps like mess_rating which only deal with the particular usage. But building that right now would be too much work without any guarantee of the work ever being deployed.
 
 
+
 Notes on using 3.5 Inch Display :
 	The first link worked for me. However, just for the sake of completeness, I am giving other links which might be useful.
 	https://www.raspberrypi.org/forums/viewtopic.php?&t=139917
 	https://www.raspberrypi.org/forums/viewtopic.php?t=143581
 	http://www.waveshare.com/wiki/3.5inch_RPi_LCD_%28A%29
 	http://www.waveshare.com/3.5inch-rpi-lcd-a.htm
+
+
 
 Notes on simultaneously using 3.5 Inch Display and MFRC522 Reader:
 	MFRC522 Reader uses SPI to communicate with RPi.

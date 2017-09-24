@@ -37,7 +37,7 @@ class Activity(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True, unique=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	rating = models.IntegerField(validators=[validate_ratingrange])
-	hostel = models.CharField(max_length=20, choices=constants.hostels) #Auto filled from profile.subscribed_hostel
+	hostel = models.CharField(max_length=20, choices=constants.hostels)
 	meal = models.CharField(max_length=10, choices=constants.meals)
 
 	def get_profile_name(self):

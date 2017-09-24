@@ -14,6 +14,7 @@ import multiprocessing
 import time
 import constants
 from django.db import IntegrityError
+import datetime
 
 # Create your views here.
 
@@ -78,11 +79,29 @@ class RatingView(View):
 
 	def post(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
-			#Get the rating
+			#Make sure user has registered with hostel authorities
+			p = request.user.profile
+			if p.name is None or p.resident_hostel is None or p.subscribed_hostel is None:
+				messages.Error(request, "User details empty. Contact hostel authorities for approval.")
+				return render(request, 'rating/error.html')
+
+			#Get the data to be saved
 			rating = request.POST.get("rating")
+			hostel = request.user.profile.subscribed_hostel
+			t = datetime.datetime.now()
+			if datetime.time(7,0,0) < t.time() < datetime.time(9,30,0):
+				meal = "Breakfast"
+			elif datetime.time(12,0,0) < t.time() < datetime.time(14,30,0):
+				meal = "Lunch"
+			elif datetime.time(20,0,0) < t.time() < datetime.time(22,30,0):
+				meal = "Dinner"
+			else: #User is trying to fill feedback when mess is closed
+				messages.Error(request, "Mess is closed. Please come back during next meal.")
+				return render(request, 'rating/error.html')
 			#Save it in activity
-			temp = Activity(user=request.user, rating=rating)
+			temp = Activity(user=request.user, rating=rating, hostel=hostel, meal=meal)
 			temp.save()
+			
 			#Logout the user
 			logout(request)
 			#Render a thank you page

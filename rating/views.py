@@ -81,8 +81,8 @@ class RatingView(View):
 		if request.user.is_authenticated:
 			#Make sure user has registered with hostel authorities
 			p = request.user.profile
-			if p.name is None or p.resident_hostel is None or p.subscribed_hostel is None:
-				messages.Error(request, "User details empty. Contact hostel authorities for approval.")
+			if p.name=='' or p.resident_hostel=='' or p.subscribed_hostel=='':
+				messages.error(request, "User details empty. Contact hostel authorities for approval.")
 				return render(request, 'rating/error.html')
 
 			#Get the data to be saved
@@ -96,7 +96,7 @@ class RatingView(View):
 			elif datetime.time(20,0,0) < t.time() < datetime.time(22,30,0):
 				meal = "Dinner"
 			else: #User is trying to fill feedback when mess is closed
-				messages.Error(request, "Mess is closed. Please come back during next meal.")
+				messages.error(request, "Mess is closed. Please come back during next meal.")
 				return render(request, 'rating/error.html')
 			#Save it in activity
 			temp = Activity(user=request.user, rating=rating, hostel=hostel, meal=meal)

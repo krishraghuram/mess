@@ -7,6 +7,10 @@ import signal
 
 continue_reading = True
 
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(33, GPIO.OUT)
+GPIO.output(33, True)
+
 # Capture SIGINT for cleanup when the script is aborted
 
 
@@ -20,7 +24,7 @@ def end_read(signal, frame):
 signal.signal(signal.SIGINT, end_read)
 
 # Create an object of the class MFRC522
-MIFAREReader = MFRC522.MFRC522()
+MIFAREReader = MFRC522.MFRC522(dev='/dev/spidev1.2')
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:

@@ -5,8 +5,13 @@ import RPi.GPIO as GPIO
 import MFRC522
 
 def readcard(q):
+    #Give power to the RFID reader
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(33, GPIO.OUT)
+    GPIO.output(33, True)
+
     # Create an object of the class MFRC522
-    MIFAREReader = MFRC522.MFRC522()
+    MIFAREReader = MFRC522.MFRC522(dev='/dev/spidev1.2')
 
     # This loop keeps checking for chips. If one is near it will get the UID and stop
     continue_reading = True
@@ -37,7 +42,7 @@ def readcard(q):
 
             # Dump the data
             text = MIFAREReader.DumpClassic1K_Text(key, uid, print_text=False)
-            text = [i for i in text if i is not '\x00']
+            text = [i for i in text if i!='\x00']
             text = text[5:] + text[1:5] + text[0:1]
             rollno = ''.join(text)
             print("Roll Number: "+rollno)
@@ -45,9 +50,8 @@ def readcard(q):
             MIFAREReader.StopCrypto1()
 
             continue_reading = False
+            GPIO.output(33, False)
 
     #Put the card in queue
     q.put((rfid,rollno))
-    
-    
-    
+

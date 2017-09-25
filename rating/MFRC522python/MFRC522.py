@@ -31,7 +31,7 @@ class MFRC522:
         dev (string): The socket to use. "/dev/spidev0.0" by default.
         spd (int): The speed at which to clock. 1000000 by default.
     """
-    NRSTPD = 22
+    NRSTPD = 32
 
     MAX_LEN = 16
 
@@ -158,7 +158,7 @@ class MFRC522:
     def __init__(self, dev='/dev/spidev0.0', spd=1000000):
         spi.openSPI(device=dev, speed=spd)
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(22, GPIO.OUT)
+        GPIO.setup(self.NRSTPD, GPIO.OUT)
         GPIO.output(self.NRSTPD, 1)
         self.Init()
 

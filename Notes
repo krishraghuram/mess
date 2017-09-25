@@ -2,25 +2,20 @@ Done:
 	Admin Site 
 	New User Registration
 	
-	Django date and time is wrong - Only true fix is NTP :(
-		Call JK Ghosh or Guna sir.
-
-	In Activity, 
-		We need a hostel field
-		We need a meal field
-
-	In RatingView
-		Activity.hostel should be taken from profile.subscribed_hostel of the logged in user
-		Only allow one feedback per meal.
-			Feedback time will be 
-				7-9:30 for breakfast
-				12-2:30 for lunch
-				8-10:30 for dinner
-		Ensure that those submitting feedback have a name, resident_hostel and subscribed_hostel. Else - tell them to contact hostel authorities. If we dont do this, people can submit feedback with just the automatic registration.
+Todo:
+	IMPORTANT
+	The meal time checking will work only if time is proper
+	Also, git commits will cause problems if time is not proper
+	Only true fix is NTP :(
+	Call JK Ghosh or Guna sir.
+	Also remember to set the TIMEZONE in django settings
 
 	Make Pi Screen Work
 	Figure out how to multiplex SPI so that two devices can work
 
+	Deploying in apache
+
+	Writing documentation from scratch
 
 
 Notes on User and Profile creation:

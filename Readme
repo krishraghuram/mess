@@ -1,0 +1,132 @@
+Install Rpi Jessie / Stretch
+	...
+	...
+	...
+
+sudo raspi-config
+	Expand Filesystem(Not needed in Stretch)
+	Change Password
+		rfid
+	Internationalization Options
+		Change Timezone
+			Asia/Kolkata
+		Change Keyboard Layout
+			Dell 101 Key PC
+		Wifi Country
+			India
+	Advanced Options
+		SSH
+		SPI
+
+Setup LAN/Wifi
+	LAN in Jessie
+		Static IP for LAN - https://www.modmypi.com/blog/tutorial-how-to-give-your-raspberry-pi-a-static-ip-address
+	LAN in Stretch(have to use dhcpcd.conf)
+		https://www.raspberrypi.org/forums/viewtopic.php?t=191140 
+	Wifi - just use the GUI to connect
+
+Test SSH
+
+#sudo nano /boot/config.txt
+#	Set hdmi_drive=2
+#	Set hdmi_mode=16
+#sudo reboot
+
+sudo nano /etc/apt/apt.conf
+	Acquire::http::Proxy "http://raghu:backspace@172.16.101.138:3128/";
+	Acquire::https::Proxy "http://raghu:backspace@172.16.101.138:3128/";	
+sudo apt-get update
+sudo nano ~/.bashrc
+	#Export Proxy
+	export http_proxy=http://raghu:backspace@172.16.101.138:3128/
+	export https_proxy=http://raghu:backspace@172.16.101.138:3128/
+source ~/.bashrc
+
+wget --no-check-certificate http://www.waveshare.com/w/upload/0/00/LCD-show-170703.tar.gz
+tar xvf LCD-show-170703.tar.gz
+cd LCD-show
+sudo ./LCD35-show
+
+sudo nano /boot/config.txt
+	dtoverlay=spi1-3cs,cs0_pin=5,cs1_pin=6,cs2_pin=16
+sudo reboot
+
+Apt install necessary packages like
+sudo apt-get install build-essential python-dev python3-dev python-pip
+
+Follow instructions from https://github.com/mab5vot9us9a/MFRC522-python
+Note : We have to make several modifications to the instructions given there. 
+	Connect pins of MFRC522 like given below
+		MFRC522 Pin - RPI Physical Pin Number
+		SDA  - 36
+		SCK  - 40
+		MOSI - 38
+		MISO - 35
+		IRQ  - Not Connected
+		GND  - 34
+		RST  - Not Connected
+		3V3  - 33
+
+	sudo apt-get install git python3-dev --yes
+	git clone https://github.com/mab5vot9us9a/SPI-Py && cd SPI-Py
+	sudo python3 setup.py install
+	sudo python setup.py install
+	cd ..
+
+	git clone https://github.com/mab5vot9us9a/MFRC522-python.git && cd MFRC522-python
+
+	nano MFRC522.py   #in line 34 and 161
+		NRSTPD = 32
+		GPIO.setup(self.NRSTPD, GPIO.OUT)
+
+	nano Dump.py   #in line 23
+		MIFAREReader = MFRC522.MFRC522(dev='/dev/spidev1.2')
+
+	nano Dump.py #add code to give power via Pin-33
+	#Add these lines after line 8 (continue_reading=True)
+		GPIO.setmode(GPIO.BOARD)
+		GPIO.setup(33, GPIO.OUT)
+		GPIO.output(33, True)
+
+	Run,
+		python3 Dump.py
+	and show the RFID tag on it.
+
+	git clone https://github.com/krishraghuram/mess.git
+	cd mess
+
+	sudo apt-get install mariadb-server
+	sudo apt-get install libmariadbclient-dev
+	sudo mysql -u root
+		CREATE DATABASE mess;
+		CREATE USER 'mess'@'localhost' IDENTIFIED BY 'mess';
+		GRANT ALL PRIVILEGES ON mess . * TO 'mess'@'localhost';
+		FLUSH PRIVILEGES;
+	sudo -E -H pip install -r requirements.txt
+
+	cd rating/MFRC522python
+		nano MFRC522.py   #in line 34 and 161
+			NRSTPD = 32
+			GPIO.setup(self.NRSTPD, GPIO.OUT)
+
+		nano Dump.py   #in line 23
+			MIFAREReader = MFRC522.MFRC522(dev='/dev/spidev1.2')
+
+		nano Dump.py #add code to give power via Pin-33
+		#Add these lines after line 8 (continue_reading=True)
+			GPIO.setmode(GPIO.BOARD)
+			GPIO.setup(33, GPIO.OUT)
+			GPIO.output(33, True)
+
+		nano util.py #Add the following lines at the top of readcard() functions definition
+		    #Give power to the RFID reader
+		    GPIO.setmode(GPIO.BOARD)
+		    GPIO.setup(33, GPIO.OUT)
+		    GPIO.output(33, True)
+		    # Create an object of the class MFRC522
+		    MIFAREReader = MFRC522.MFRC522(spidev='/dev/spidev1.2')
+
+	cd ~/mess
+	python manage.py makemigrations
+	python manage.py migrate
+	python manage.py runserver 0.0.0.0:8000

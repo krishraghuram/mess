@@ -1,0 +1,36 @@
+Daily Notes
+Made necessary changes in the django and committed them
+	Activity model and RatingView view
+
+Cleaned databases and reset migrations in pi
+
+Tried to connect screen and reader at same time and work. 
+It does not work. 
+Basically, the dtoverlays for waveshare35a and spi1-3cs are conflicting in /boot/config.txt
+Need to figure this out
+
+Basically, the device tree overlays of SPI Bus 1 and Waveshare 3.5 inch display are conflicting.
+	dtoverlay=spi1-3cs 
+	dtoverlay=waveshare35a
+The overlay files are stored in /boot/overlays. But they are unreadable device tree blob (dtbo) files that are created by compiling/building device tree source (dts) files
+I tried to find the device tree source files for these. And I did - kind of.
+	https://github.com/notro/fbtft/wiki/FBTFT-RPI-overlays
+	https://github.com/swkim01/waveshare-dtoverlays/blob/master/waveshare35a-overlay.dts
+	https://github.com/raspberrypi/linux/tree/rpi-4.9.y/arch/arm/boot/dts/overlays
+	https://github.com/raspberrypi/linux/blob/rpi-4.9.y/arch/arm/boot/dts/overlays/spi1-3cs-overlay.dts
+	https://github.com/raspberrypi/linux/blob/rpi-4.9.y/arch/arm/boot/dts/overlays/sc16is752-spi1-overlay.dts
+However, I am unable to make any sense of the source so far......
+
+Another option is to not rely on kernel devices for both SPIO and SPI1.
+Which means using some GPIO library + userspace code to communicate with 3.5 inch screen or mfrc522 via SPI.
+For MFRC522, we already found PIGPIO and the user's code - but using that now feels like giving up.
+
+I found several other nice libraries, but either they didnt work, or had some minor bug which makes them useless.
+	This library works amazing for reading touch input - but its only for touch. Not for display.
+		https://github.com/MatthewLowden/RPi-XPT2046-Touchscreen-Python
+	Ideally, this should work for display, but I havent figured out how to use it yet.
+		https://pypi.python.org/pypi/gfxlcd
+	This is pretty much the same as the previous one.. And I didnt look too far into this - since it required me to wire the pins of the display, and I dont have spare jumpers.. 
+		https://learn.adafruit.com/user-space-spi-tft-python-library-ili9341-2-8/wiring
+	This is the blog of the guy who wrote the gfxlcd library - and its awesome
+		https://koscis.wordpress.com/2017/05/22/raspberry-pi-gfxlcd-and-ili9486/

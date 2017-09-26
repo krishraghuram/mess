@@ -43,7 +43,8 @@ sudo nano ~/.bashrc
 	export https_proxy=http://raghu:backspace@172.16.101.138:3128/
 source ~/.bashrc
 
-Follow https://github.com/krishraghuram/mess-rpisetup
+Clone https://github.com/krishraghuram/mess-rpisetup
+Follow all instructions in "Todo" file
 Complete it and Test it before continuing!!!
 
 cd ~

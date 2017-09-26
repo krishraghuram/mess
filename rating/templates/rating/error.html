@@ -7,16 +7,16 @@
 {% block js %}
 	<script type="text/javascript">
 		$( document ).ready(function() {
-			setTimeout(function(){ window.location.href="{% url 'rating:start' %}" }, 2500);
+			setTimeout(function(){ window.location.href="{% url 'rating:start' %}" }, 4000);
 		});
 	</script>
 {% endblock %}
 
 {% block content %}
     <div class="container" style="padding-top:50px; text-align:center;">
-        <h1>Sorry, An Error Occurred</h1><br/><br/><br/>
+        <h3>Sorry, An Error Occurred</h3>
         
-        <h2><strong><u>Details</u></strong></h2>
+        <h3><strong><u>Details</u></strong></h3>
         
         <h3 style="color: red">
 		{% if messages %}
@@ -26,6 +26,6 @@
 		{% endif %}
 		</h3>
 
-		<h2>Redirecting. Please wait.</h2>
+		<h3>Redirecting. Please wait.</h3>
     </div>
 {% endblock %}

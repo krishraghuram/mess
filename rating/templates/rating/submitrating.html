@@ -7,12 +7,12 @@
 {% block js %}{% endblock %}
 
 {% block content %}
-	<div class="container" style="padding-top:50px; text-align:center;">
-		<h1>
+	<div class="container" style="padding-top:70px; text-align:center;">
+		<h2>
 			{% if request.user.is_authenticated %}
 				Welcome {{ request.user.profile.name }}
 			{% endif %}
-		</h1>
+		</h2>
 
 		<form method="post" action="{% url 'rating:rating' %}">
 			{% csrf_token %}

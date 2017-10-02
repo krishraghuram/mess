@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import Profile, Activity
-from MFRC522python import util
+# from MFRC522python import util
 import multiprocessing
 import time
 import constants
@@ -25,20 +25,22 @@ class ReadView(View):
 			logout(request)
 
 		#Try to read card.
-		q = multiprocessing.Queue()
-		p = multiprocessing.Process(target=util.readcard, args=(q,))
-		p.start()
-		# Wait for timeout seconds or until process finishes
-		p.join(constants.read_timeout)
-		# If thread is still active
-		if p.is_alive():
-			# Terminate
-			p.terminate()
-			p.join()
-			messages.error(request, "Could not read card. Try again later.")
-			return render(request, 'rating/error.html')
-		#Get the card from queue
-		(rfid,rollno) = q.get()
+		# q = multiprocessing.Queue()
+		# p = multiprocessing.Process(target=util.readcard, args=(q,))
+		# p.start()
+		# # Wait for timeout seconds or until process finishes
+		# p.join(constants.read_timeout)
+		# # If thread is still active
+		# if p.is_alive():
+		# 	# Terminate
+		# 	p.terminate()
+		# 	p.join()
+		# 	messages.error(request, "Could not read card. Try again later.")
+		# 	return render(request, 'rating/error.html')
+		# #Get the card from queue
+		# (rfid,rollno) = q.get()
+		rfid = 1
+		rollno = 1
 
 		#Search for card in Users
 		try:
@@ -59,6 +61,12 @@ class ReadView(View):
 			messages.error(request, "New user created. Contact hostel authorities for approval.")
 			return render(request, 'rating/error.html')
 
+		#Make sure user has registered with hostel authorities
+		p = request.user.profile
+		if p.name=='' or p.resident_hostel=='' or p.subscribed_hostel=='':
+			messages.error(request, "User details empty. Contact hostel authorities for approval.")
+			return render(request, 'rating/error.html')
+		
 		#Login the user
 		login(request, user)
 
@@ -79,12 +87,6 @@ class RatingView(View):
 
 	def post(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
-			#Make sure user has registered with hostel authorities
-			p = request.user.profile
-			if p.name=='' or p.resident_hostel=='' or p.subscribed_hostel=='':
-				messages.error(request, "User details empty. Contact hostel authorities for approval.")
-				return render(request, 'rating/error.html')
-
 			#Get the data to be saved
 			rating = request.POST.get("rating")
 			hostel = request.user.profile.subscribed_hostel

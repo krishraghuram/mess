@@ -48,6 +48,22 @@ sudo apt-get install htpdate
 sudo crontab -e
         * * * * * /usr/sbin/htpdate -s intranet.iitg.ernet.in
 
+Setting up Key based SSH
+Follow step 4 from here :
+	https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04#step-four-—-add-public-key-authentication-recommended
+Disabling Password Based SSH
+Follow step 5 from here :
+	https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04#step-five-—-disable-password-authentication-recommended
+
+Firewall Setup
+General Guides
+	https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04#step-seven-—-set-up-a-basic-firewall
+	https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-14-04
+Allow HTTP and HTTPS from everywhere
+Allow SSH from required IP's
+If you are going to run django development server, also allow TCP port 8000 from everywhere
+Set default rule for incoming packets to deny
+
 Clone https://github.com/krishraghuram/mess-rpisetup
 Follow all instructions in "Todo" file
 Complete it and Test it before continuing!!!

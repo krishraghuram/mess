@@ -76,7 +76,7 @@ class ReadView(View):
 			return render(request, 'rating/error.html')
 
 		#Make sure user has registered with hostel authorities
-		p = request.user.profile
+		p = user.profile
 		if p.name=='' or p.resident_hostel=='' or p.subscribed_hostel=='':
 			messages.error(request, "User details empty. Contact hostel authorities for approval.")
 			return render(request, 'rating/error.html')

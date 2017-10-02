@@ -16,6 +16,20 @@ import constants
 from django.db import IntegrityError
 import datetime
 
+#Small function to get meal time.
+def get_meal():
+	t = datetime.datetime.now()
+	meal_times = constants.meal_times
+	if meal_times["Breakfast"][0] < t.time() < meal_times["Breakfast"][1]:
+		meal = "Breakfast"
+	elif meal_times["Lunch"][0] < t.time() < meal_times["Lunch"][1]:
+		meal = "Lunch"
+	elif meal_times["Dinner"][0] < t.time() < meal_times["Dinner"][1]:
+		meal = "Dinner"
+	else: #User is trying to fill feedback when mess is closed
+		meal = ""
+	return meal
+
 # Create your views here.
 
 class ReadView(View):
@@ -66,7 +80,11 @@ class ReadView(View):
 		if p.name=='' or p.resident_hostel=='' or p.subscribed_hostel=='':
 			messages.error(request, "User details empty. Contact hostel authorities for approval.")
 			return render(request, 'rating/error.html')
-		
+		#Make sure mess is open
+		if meal=="":
+			messages.error(request, "Mess is closed. Please come back during next meal.")
+			return render(request, 'rating/error.html')
+
 		#Login the user
 		login(request, user)
 
@@ -90,14 +108,8 @@ class RatingView(View):
 			#Get the data to be saved
 			rating = request.POST.get("rating")
 			hostel = request.user.profile.subscribed_hostel
-			t = datetime.datetime.now()
-			if datetime.time(7,0,0) < t.time() < datetime.time(9,30,0):
-				meal = "Breakfast"
-			elif datetime.time(12,0,0) < t.time() < datetime.time(14,30,0):
-				meal = "Lunch"
-			elif datetime.time(20,0,0) < t.time() < datetime.time(22,30,0):
-				meal = "Dinner"
-			else: #User is trying to fill feedback when mess is closed
+			meal = get_meal()
+			if meal=="": #Once again, make sure mess is open
 				messages.error(request, "Mess is closed. Please come back during next meal.")
 				return render(request, 'rating/error.html')
 			#Save it in activity

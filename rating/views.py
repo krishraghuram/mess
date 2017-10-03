@@ -81,6 +81,7 @@ class ReadView(View):
 			messages.error(request, "User details empty. Contact hostel authorities for approval.")
 			return render(request, 'rating/error.html')
 		#Make sure mess is open
+		meal = get_meal()
 		if meal=="":
 			messages.error(request, "Mess is closed. Please come back during next meal.")
 			return render(request, 'rating/error.html')

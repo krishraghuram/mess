@@ -75,12 +75,12 @@ sudo mysql -u root
 	CREATE USER 'mess'@'localhost' IDENTIFIED BY 'mess';
 	GRANT ALL PRIVILEGES ON mess . * TO 'mess'@'localhost';
 	FLUSH PRIVILEGES;
-sudo -E -H pip install -r requirements.txt
 
 #Clone the repo
 cd ~
 git clone https://github.com/krishraghuram/mess.git
 cd mess
+sudo -E -H pip install -r requirements.txt
 #Checkout the version(Replace x by appropriate number)
 git checkout version1.x
 

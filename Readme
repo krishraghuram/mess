@@ -37,7 +37,7 @@ sudo nano /etc/apt/apt.conf
 	Acquire::http::Proxy "http://raghu:backspace@172.16.101.138:3128/";
 	Acquire::https::Proxy "http://raghu:backspace@172.16.101.138:3128/";	
 sudo apt-get update
-sudo nano ~/.bashrc
+nano ~/.bashrc
 	#Export Proxy
 	export http_proxy=http://raghu:backspace@172.16.101.138:3128/
 	export https_proxy=http://raghu:backspace@172.16.101.138:3128/
@@ -81,7 +81,9 @@ sudo mysql -u root
 	FLUSH PRIVILEGES;
 sudo -E -H pip install -r requirements.txt
 
+#Test the website using django's built in webserver
 cd ~/mess
 python manage.py makemigrations
 python manage.py migrate
+python manage.py createsuperuser
 python manage.py runserver 0.0.0.0:8000

@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import Profile, Activity
-# from MFRC522python import util
+from MFRC522python import util
 import multiprocessing
 import time
 import constants
@@ -30,6 +30,9 @@ def get_meal():
 		meal = ""
 	return meal
 
+
+
+
 # Create your views here.
 
 class ReadView(View):
@@ -39,22 +42,20 @@ class ReadView(View):
 			logout(request)
 
 		#Try to read card.
-		# q = multiprocessing.Queue()
-		# p = multiprocessing.Process(target=util.readcard, args=(q,))
-		# p.start()
-		# # Wait for timeout seconds or until process finishes
-		# p.join(constants.read_timeout)
-		# # If thread is still active
-		# if p.is_alive():
-		# 	# Terminate
-		# 	p.terminate()
-		# 	p.join()
-		# 	messages.error(request, "Could not read card. Try again later.")
-		# 	return render(request, 'rating/error.html')
-		# #Get the card from queue
-		# (rfid,rollno) = q.get()
-		rfid = 1
-		rollno = 1
+		q = multiprocessing.Queue()
+		p = multiprocessing.Process(target=util.readcard, args=(q,))
+		p.start()
+		# Wait for timeout seconds or until process finishes
+		p.join(constants.read_timeout)
+		# If thread is still active
+		if p.is_alive():
+			# Terminate
+			p.terminate()
+			p.join()
+			messages.error(request, "Could not read card. Try again later.")
+			return render(request, 'rating/error.html')
+		#Get the card from queue
+		(rfid,rollno) = q.get()
 
 		#Search for card in Users
 		try:

@@ -22,7 +22,7 @@ hostels = (
 
 #The range of allowed values of ratings.
 #Note : The values rating_low and rating_high are included in allowed values.
-rating_low = 1
+rating_low = 0
 rating_high = 5
 
 #Time to wait for card after "Start" is pressed

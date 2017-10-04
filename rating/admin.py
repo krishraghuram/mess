@@ -9,7 +9,7 @@ from .models import Profile, Activity
 class ProfileAdmin(admin.ModelAdmin):
 	fields = ('rfid', 'rollno', 'name', 'resident_hostel', 'subscribed_hostel')
 	readonly_fields = ('rfid', 'rollno')
-	list_display = ('name','rollno')
+	list_display = ('get_name','rollno')
 
 	def has_add_permission(self, request):
 		return False
@@ -17,10 +17,30 @@ class ProfileAdmin(admin.ModelAdmin):
 
 
 class ActivityAdmin(admin.ModelAdmin):
-	fields = ('timestamp', 'get_profile_name', 'rating', 'hostel', 'meal')
-	readonly_fields = ('timestamp', 'get_profile_name', 'rating', 'hostel', 'meal')
-	list_display = ('timestamp', 'get_profile_name', 'rating')
-	list_filter = ('hostel','meal','rating')
+	fields = (
+		'timestamp', 
+		'get_profile_name', 
+		'cat_and_punct', 
+		'cleanliness',
+		'breakfast',
+		'lunch',
+		'dinner',
+		'hostel', 
+		'meal'
+		)
+	readonly_fields = (
+		'timestamp', 
+		'get_profile_name', 
+		'cat_and_punct', 
+		'cleanliness',
+		'breakfast',
+		'lunch',
+		'dinner',
+		'hostel', 
+		'meal'
+		)
+	list_display = ('timestamp', 'get_profile_name')
+	list_filter = ('hostel','meal')
 
 	def has_add_permission(self, request):
 		return False

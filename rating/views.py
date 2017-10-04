@@ -107,14 +107,27 @@ class RatingView(View):
 	def post(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
 			#Get the data to be saved
-			rating = request.POST.get("rating")
+			cat_and_punct  =   request.POST.get("catering_and_punctuality")
+			cleanliness    =   request.POST.get("cleanliness")
+			breakfast      =   request.POST.get("breakfast")
+			lunch          =   request.POST.get("lunch")
+			dinner         =   request.POST.get("dinner")
 			hostel = request.user.profile.subscribed_hostel
 			meal = get_meal()
 			if meal=="": #Once again, make sure mess is open
 				messages.error(request, "Mess is closed. Please come back during next meal.")
 				return render(request, 'rating/error.html')
 			#Save it in activity
-			temp = Activity(user=request.user, rating=rating, hostel=hostel, meal=meal)
+			temp = Activity(
+				user=request.user, 
+				cat_and_punct=cat_and_punct, 
+				cleanliness=cleanliness,
+				breakfast=breakfast,
+				lunch=lunch,
+				dinner=dinner,
+				hostel=hostel, 
+				meal=meal
+				)
 			temp.save()
 			
 			#Logout the user

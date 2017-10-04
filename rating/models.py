@@ -18,9 +18,11 @@ class Profile(models.Model):
 	resident_hostel = models.CharField(max_length=20, choices=constants.hostels)
 	subscribed_hostel = models.CharField(max_length=20, choices=constants.hostels)
 
-	def __str__(self):
-		s = self.name+"("+self.rollno+")"
-		return '%s' % (s)
+	def get_name(self):
+		if self.name=="" or self.name is None:
+			return "New User"+"("+self.rollno+")"
+		else: 
+			return self.name
 
 
 
@@ -36,7 +38,13 @@ def validate_ratingrange(value):
 class Activity(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True, unique=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	rating = models.IntegerField(validators=[validate_ratingrange])
+	
+	cat_and_punct =   models.IntegerField("Catering and Punctuality" , validators=[validate_ratingrange])
+	cleanliness   =   models.IntegerField("Cleanliness"              , validators=[validate_ratingrange])
+	breakfast     =   models.IntegerField("Breakfast"                , validators=[validate_ratingrange])
+	lunch         =   models.IntegerField("Lunch"                    , validators=[validate_ratingrange])
+	dinner        =   models.IntegerField("Dinner"                   , validators=[validate_ratingrange])
+
 	hostel = models.CharField(max_length=20, choices=constants.hostels)
 	meal = models.CharField(max_length=10, choices=constants.meals)
 

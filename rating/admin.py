@@ -9,7 +9,7 @@ from .models import Profile, Activity
 class ProfileAdmin(admin.ModelAdmin):
 	fields = ('rfid', 'rollno', 'name', 'resident_hostel', 'subscribed_hostel')
 	readonly_fields = ('rfid', 'rollno')
-	list_display = ('name','rollno')
+	list_display = ('get_name','rollno')
 
 	def has_add_permission(self, request):
 		return False

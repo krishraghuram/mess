@@ -18,9 +18,11 @@ class Profile(models.Model):
 	resident_hostel = models.CharField(max_length=20, choices=constants.hostels)
 	subscribed_hostel = models.CharField(max_length=20, choices=constants.hostels)
 
-	def __str__(self):
-		s = self.name+"("+self.rollno+")"
-		return '%s' % (s)
+	def get_name(self):
+		if self.name=="" or self.name is None:
+			return "New User"+"("+self.rollno+")"
+		else: 
+			return self.name
 
 
 

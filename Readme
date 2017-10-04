@@ -68,10 +68,6 @@ Clone https://github.com/krishraghuram/mess-rpisetup
 Follow all instructions in "Todo" file
 Complete it and Test it before continuing!!!
 
-cd ~
-git clone https://github.com/krishraghuram/mess.git
-cd mess
-
 sudo apt-get install mariadb-server
 sudo apt-get install libmariadbclient-dev
 sudo mysql -u root
@@ -81,9 +77,16 @@ sudo mysql -u root
 	FLUSH PRIVILEGES;
 sudo -E -H pip install -r requirements.txt
 
+#Clone the repo
+cd ~
+git clone https://github.com/krishraghuram/mess.git
+cd mess
+#Checkout the version(Replace x by appropriate number)
+git checkout version1.x
+
 #Test the website using django's built in webserver
 cd ~/mess
 python manage.py makemigrations
 python manage.py migrate
-python manage.py createsuperuser
+python manage.py createsuperuser #Give necessary details here
 python manage.py runserver 0.0.0.0:8000

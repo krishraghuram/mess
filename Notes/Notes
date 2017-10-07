@@ -1,0 +1,13 @@
+Done:
+	Admin Site 
+	New User Registration
+	Time : Fixed using htpdate and cron instead of NTP
+	
+Todo:
+	Set the TIMEZONE in django settings
+
+	Deploying in nginx
+
+	Writing documentation from scratch
+
+

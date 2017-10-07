@@ -1,0 +1,20 @@
+Notes on User and Profile creation:
+	The user and profile creation process is a bit of jugaad and is not very scalable.
+	Both are created in ReadView in rating/views.py
+		User is created with
+			username=rollno read from ID card
+			password="USELESS_PASS"
+			user.set_unusable_password to ensure nobody can use passwords. User authentication for RFID systems is the ID card.
+		Profile is created with
+			user=newly created user
+			rfid=rfid read from ID Card
+			rollno=rollno read from ID Card
+		We are not showing User objects anywhere - neither to admin nor to users.
+		They are only used to simplify the internal work, namely - authentication and django sessions.
+		The profile object also has name, resident_hostel and subscribed_hostel which are initially empty. The hostel authorities have to manually fill this up.
+	
+	Initially, we used post_save signal to automatically create profiles. But that creates a problem, as profile.rfid and profile.rollno are both set to be unique. Thus, empty string "" is allowed once for both fields. But if we try to create another user object, the unique condition will raise an IntegrityError. 
+
+	Now, we handle user creation and profile creation both in rating/views.py, in ReadView. This is also not the best solution, as the responsibility of creating users falls into a particular app. 
+
+	The best solution is to probably create a "core" app which takes care of Users, RFID etc. and the have apps like mess_rating which only deal with the particular usage. But building that right now would be too much work without any guarantee of the work ever being deployed.

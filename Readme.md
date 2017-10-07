@@ -54,10 +54,10 @@
 9) Install MariaDB and Create databases that will be used by django.
 	* sudo apt-get install mariadb-server libmariadbclient-dev
 	* sudo mysql -u root
-		CREATE DATABASE mess;
-		CREATE USER 'mess'@'localhost' IDENTIFIED BY 'mess';
-		GRANT ALL PRIVILEGES ON mess . * TO 'mess'@'localhost';
-		FLUSH PRIVILEGES;
+		* CREATE DATABASE mess;
+		* CREATE USER 'mess'@'localhost' IDENTIFIED BY 'mess';
+		* GRANT ALL PRIVILEGES ON mess . * TO 'mess'@'localhost';
+		* FLUSH PRIVILEGES;
 
 10) Clone this repo - https://github.com/krishraghuram/mess.git
 	* Go to the project folder

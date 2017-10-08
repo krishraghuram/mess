@@ -66,9 +66,64 @@
 
 11) Setup and test the django project
 	* Go to the project folder
-	* python manage.py makemigrations
-	* python manage.py migrate
-	* python manage.py createsuperuser
-	* python manage.py runserver 0.0.0.0:8000
+	* `python manage.py makemigrations`
+	* `python manage.py migrate`
+	* `python manage.py createsuperuser`
+	* `python manage.py runserver 0.0.0.0:8000`
 	* Go to a web browser and type '127.0.0.1:8000' and test if the website is working
+
+12) Deploy using Gunicorn and Nginx. You can follow this [link](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-16-04).  
+The guide uses postgresql, but we plan to use mariadb - so make necessary changes.  
+The guide also uses virtual environments, but we dont need to use virtual environment in production - so make necessary adjustments.  
+	* Run `sudo apt-get install nginx`
+	* Run `sudo -E -H pip install gunicorn`
+	* Go to project folder and open settings.py. If necessary, set or change
+		* ALLOWED_HOSTS
+		* DATABASES
+		* STATIC_ROOT
+	* Run `python manage.py collectstatic`
+	* Test gunicorn by running `gunicorn --bind 0.0.0.0:8000 mess.wsgi`, and checking the website from browser.  
+	The website will not have any style, since gunicorn does not know about the CSS responsible for this
+	* Create a gunicorn systemd service file and enable it
+		* Create a new file by typing `sudo nano /etc/systemd/system/gunicorn.service`
+		* This is a sample gunicorn.service file. You might have to make necessary modifications.  
+		```
+		[Unit]
+		Description=gunicorn daemon
+		After=network.target
+
+		[Service]
+		User=pi
+		Group=www-data
+		WorkingDirectory=/home/pi/mess
+		ExecStart=/usr/local/bin/gunicorn --access-logfile - --workers 1 --bind unix:/home/pi/mess/mess.sock mess.wsgi:application
+
+		[Install]
+		WantedBy=multi-user.target
+		```
+		* Run `sudo systemctl start gunicorn`
+		* Run `sudo systemctl enable gunicorn`
+	* Setup Nginx
+		* Run `sudo nano /etc/nginx/sites-available/mess`
+		* This is a sample server block. You might have to make necessary modifications.  
+		```
+		server {
+			listen 80;
+			server_name <INSERT IP HERE>;
+
+			location = /favicon.ico { access_log off; log_not_found off; }
+			location /static/ {
+				root /home/pi/mess;
+			}
+
+			location / {
+				include proxy_params;
+				proxy_pass http://unix:/home/pi/mess/mess.sock;
+			}
+		}
+		```
+		* Run `sudo ln -s /etc/nginx/sites-available/mess /etc/nginx/sites-enabled`
+		* Run `sudo systemctl restart nginx`
+	* Open a browser and check the website. It should be up and running on port 80.  
+	If you are facing problems, please check the above link. The guide has some instructions about troubleshooting.
 

@@ -46,12 +46,21 @@
 	* Allow http, https, openssh, and port 8000
 	* Enable ufw
 
-8) Setting up MFRC522 Reader and 3.5 Inch Screen
+8) Setup Date and Time Syncing
+	* Raspberry Pi does not have an internal clock. Raspbian syncs time using NTP. But IITG firewall blocks this.
+	* Thus, we are going to use a different method - htpdate and cron
+		* Run `sudo apt-get install htpdate`
+		* Run `sudo crontab -e` (If its the first time, you will be asked to choose a text editor. For beginners, nano is the easiest editor to use)
+    	* Add this at the bottom of the file
+    	`* * * * * /usr/sbin/htpdate -s intranet.iitg.ernet.in`
+    	* Save and Exit
+
+9) Setting up MFRC522 Reader and 3.5 Inch Screen
 	* Clone https://github.com/krishraghuram/mess-rpisetup
 	* Follow all instructions in "Todo" file
 	* Complete it and Test it before continuing!!!
 
-9) Install MariaDB and Create databases that will be used by django.
+10) Install MariaDB and Create databases that will be used by django.
 	* sudo apt-get install mariadb-server libmariadbclient-dev
 	* sudo mysql -u root
 		* CREATE DATABASE mess;
@@ -59,12 +68,12 @@
 		* GRANT ALL PRIVILEGES ON mess . * TO 'mess'@'localhost';
 		* FLUSH PRIVILEGES;
 
-10) Clone this repo - https://github.com/krishraghuram/mess.git
+11) Clone this repo - https://github.com/krishraghuram/mess.git
 	* Go to the project folder
 	* sudo -E -H pip install -r requirements.txt
 	* Checkout the needed version(using git)
 
-11) Setup and test the django project
+12) Setup and test the django project
 	* Go to the project folder
 	* `python manage.py makemigrations`
 	* `python manage.py migrate`
@@ -72,7 +81,7 @@
 	* `python manage.py runserver 0.0.0.0:8000`
 	* Go to a web browser and type '127.0.0.1:8000' and test if the website is working
 
-12) Deploy using Gunicorn and Nginx. You can follow this [link](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-16-04).  
+13) Deploy using Gunicorn and Nginx. You can follow this [link](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-16-04).  
 The guide uses postgresql, but we plan to use mariadb - so make necessary changes.  
 The guide also uses virtual environments, but we dont need to use virtual environment in production - so make necessary adjustments.  
 	* Run `sudo apt-get install nginx`

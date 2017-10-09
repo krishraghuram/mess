@@ -40,14 +40,18 @@ class ReadView(View):
 			logout(request)
 
 		#Try to read card.
-		data = util.readcard(constants.read_timeout)
-		if data and len(data)==2:
-			rfid = data[0]
-			rollno = data[1]
-		else:
-			messages.error(request, "Could not read card. Try again later.")
+		try:
+			data = util.readcard(constants.read_timeout)
+			if data and len(data)==2:
+				rfid = data[0]
+				rollno = data[1]
+			else:
+				messages.error(request, "Could not read card. Try again later.")
+				return render(request, 'rating/error.html')
+		except: #Any kind of exception
+			messages.error(request, "Error while reading card. Try once more.")
 			return render(request, 'rating/error.html')
-		
+
 		#Search for card in Users
 		try:
 			user = User.objects.get(profile__rfid=rfid)

@@ -37,5 +37,5 @@ meals = (
 meal_times = {
 	"Breakfast"	:	(datetime.time(7,0,0)  , datetime.time(9,30,0)),
 	"Lunch"		:	(datetime.time(12,0,0) , datetime.time(14,30,0)),
-	"Dinner"	:	(datetime.time(22,0,0) , datetime.time(22,30,0)),
+	"Dinner"	:	(datetime.time(20,0,0) , datetime.time(22,30,0)),
 }

@@ -10,8 +10,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import Profile, Activity
 from MFRC522python import util
-import multiprocessing
-import time
 import constants
 from django.db import IntegrityError
 import datetime
@@ -42,21 +40,14 @@ class ReadView(View):
 			logout(request)
 
 		#Try to read card.
-		q = multiprocessing.Queue()
-		p = multiprocessing.Process(target=util.readcard, args=(q,))
-		p.start()
-		# Wait for timeout seconds or until process finishes
-		p.join(constants.read_timeout)
-		# If thread is still active
-		if p.is_alive():
-			# Terminate
-			p.terminate()
-			p.join()
+		data = util.readcard(constants.read_timeout)
+		if data and len(data)==2:
+			rfid = data[0]
+			rollno = data[1]
+		else:
 			messages.error(request, "Could not read card. Try again later.")
 			return render(request, 'rating/error.html')
-		#Get the card from queue
-		(rfid,rollno) = q.get()
-
+		
 		#Search for card in Users
 		try:
 			user = User.objects.get(profile__rfid=rfid)

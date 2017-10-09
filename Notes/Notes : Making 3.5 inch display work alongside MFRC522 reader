@@ -1,15 +1,50 @@
+23rd September
+MFRC522 Reader uses SPI to communicate with RPi.
+	We were using MFRC522-python and SPI-py which used the RPi's SPI Bus 0 Channel 0
+The 3.5 Inch Screen also uses SPI to communicate with reader.
+	The 3.5 inch screen probably uses both channels of SPI Bus 0(one for LCD and one for touch)
+	Source : 
+		http://www.waveshare.com/3.5inch-rpi-lcd-a.htm 
+		(Look at interface subsection)
+RPI SPI
+	The raspberry pi has a SPI Bus 1 which has 3 channels. So, technically, we can let the 3.5 inch display use the SPI Bus 0(Both Channels), and have the MFRC522 reader use the SPI Bus 1.
+	After a bit of searching, I found this,
+		http://elinux.org/RPi_SPI#Linux_driver
+		Adding dtoverlay=spi1-1cs  #1 chip select to /boot/config.txt and rebooting,
+		I got 3 new spidevices(ls /dev | grep spi). I now had, 
+			spidev0.0, spidev0.1, spidev1.0, spidev1.1, spidev1.2
+	Tried to use MFRC522-python + SPI-py with spidev1.0
+		It worked perfectly
+3v3 Pin Problem
+	Now, MFRC522 reader uses pins
+		MOSI     - 38
+		MISO     - 35
+		SCLK     - 40
+		SDA(CE2) - 36
+		GND      - 34
+	For 3v3, I am stuck. Because the only 3v3 pin is Pin 1 - and that is blocked by the 3.5 Inch Screen.
+	I quickly found a hack - I used Pin 33 - GPIO 13 as a 3v3 supply.
+		import RPi.GPIO as GPIO
+		GPIO.setmode(GPIO.BOARD)
+		GPIO.setup(33, GPIO.OUT)
+		GPIO.output(33, True)  #Supply 3v3 to MFRC522
+		GPIO.output(33, False) #Switch off MFRC522 Reader
+All I need to do now is test them both simultaneously.
+
+
+
+
+
+
+
+
 24th Sept 2017
-Made necessary changes in the django and committed them
-	Activity model and RatingView view
-
-Cleaned databases and reset migrations in pi
-
-Tried to connect screen and reader at same time and work. 
+Tried to connect screen and reader simultaneously. 
 It does not work. 
 Basically, the dtoverlays for waveshare35a and spi1-3cs are conflicting in /boot/config.txt
 Need to figure this out
 
-Basically, the device tree overlays of SPI Bus 1 and Waveshare 3.5 inch display are conflicting.
+Essentially, the device tree overlays of SPI Bus 1 and Waveshare 3.5 inch display are conflicting.
 	dtoverlay=spi1-3cs 
 	dtoverlay=waveshare35a
 The overlay files are stored in /boot/overlays. But they are unreadable device tree blob (dtbo) files that are created by compiling/building device tree source (dts) files
@@ -20,9 +55,9 @@ I tried to find the device tree source files for these. And I did.
 	https://github.com/raspberrypi/linux/blob/rpi-4.9.y/arch/arm/boot/dts/overlays/spi1-3cs-overlay.dts
 However, I am unable to make any sense of the source so far......
 
-Another option is to not rely on kernel devices for both SPIO and SPI1.
-Which means using some GPIO library + userspace code to communicate with 3.5 inch screen or mfrc522 via SPI.
-For MFRC522, we already found PIGPIO and the user's code - but using that now feels like giving up.
+Another option is to not rely on kernel devices for both SPI-O and SPI-1.
+Which means using some GPIO library + Userspace code to communicate with 3.5 inch screen or MFRC522 via SPI.
+For MFRC522, we already found PIGPIO and the User's code - but using that feels like giving up.
 	https://raspberrypi.stackexchange.com/questions/31932/add-more-than-2-spi-slaves
 	http://abyz.co.uk/rpi/pigpio/download.html
 	https://www.raspberrypi.org/forums/viewtopic.php?f=28&t=171570
@@ -37,13 +72,11 @@ I found several other nice libraries, but either they didnt work, or had some mi
 		https://github.com/MatthewLowden/RPi-XPT2046-Touchscreen-Python
 	Ideally, this should work for display, but I havent figured out how to use it yet.
 		https://pypi.python.org/pypi/gfxlcd
-	This is pretty much the same as the previous one.. And I didnt look too far into this - since it required me to wire the pins of the display, and I dont have spare jumpers.. 
-		https://learn.adafruit.com/user-space-spi-tft-python-library-ili9341-2-8/wiring
 	This is the blog of the guy who wrote the gfxlcd library - and its awesome
 		https://koscis.wordpress.com/2017/05/22/raspberry-pi-gfxlcd-and-ili9486/
 
-After all this, I took a break - and realized that I have to tackle the problem head on.
-I opened up this documentation about Device Tree from Raspberry Pi Website, and started reading the whole thing. It took me about an hour or so, but I got the hang of most of this.
+After all this, I took a break. After the break I realized that I have to tackle the problem head on.
+I opened up this documentation about Device Tree from Raspberry Pi Website, and started reading the whole thing. It took me about an hour or so, but I got the hang of most of this. If you have only enough time to read one link out of all the links I am sharing - this is the one to read.
 	https://www.raspberrypi.org/documentation/configuration/device-tree.md
 
 
@@ -57,9 +90,6 @@ I opened up this documentation about Device Tree from Raspberry Pi Website, and 
 25 Sept 2017
 Fresh day, fresh start.
 
-Started off a bit late today - had to reinstall the OS on pi. 
-Downloaded Raspbian stretch and installed it. 
-
 Immediately got down into figuring out how to make the boot overlays work without conflict.
 Looking at these two files,
 	https://github.com/swkim01/waveshare-dtoverlays/blob/master/waveshare35a-overlay.dts
@@ -67,15 +97,27 @@ Looking at these two files,
 I realized that,
 	waveshare35a-overlay.dts -> fragment@1 -> waveshare35a_pins -> BCM pins = <17 25 24>;
 	spi1-3cs-overlay.dts -> fragment@0 -> spi1_cs_pins -> BCM pins = <18 17 16>;
-I guessed that though I am not using SPI1 Channel 0 and Channel 1, which are by default on BCM Pins 18 and 17, maybe SPI1 overlay is still using them, and not allowing display to access them. 
-I also knew from studying the SPI documentation that the pins for the SPI1 bus channels can be selected(http://terminal28.blogspot.in/2016/05/enabling-spi1-on-raspberry-pi-bzero23.html)
+Hypothesis : Even though I am not using SPI-1 Channel 0 and Channel 1, which are by default on BCM Pins 18 and 17, maybe SPI-1 overlay is still using them, and not allowing display to access them. 
+I also knew from studying the SPI documentation that the pins for the SPI-1 bus channels can be chosen(http://terminal28.blogspot.in/2016/05/enabling-spi1-on-raspberry-pi-bzero23.html)
 Thus, I added the following overlay commands to /boot/config.txt
 	dtoverlay=waveshare35a
 	dtoverlay=spi1-3cs,cs0_pin=5,cs1_pin=6,cs2_pin=16
-And yes - I got both the display and the SPI1 bus to work.
+And yes - I got both the display and the SPI-1 bus to work.
 This was verified by checking the display, and by running "ls /dev | grep spi", which gave spidev1.0, spidev1.1, spidev1.2
 
 I was so happy. I quickly cloned https://github.com/mab5vot9us9a/MFRC522-python, set up everything, and ran it.
+The PIN connections I was using is this :
+MFRC522 Pin - RPI Physical Pin Number
+	SDA  - 36
+	SCK  - 40
+	MOSI - 38
+	MISO - 35
+	IRQ  - Not Connected
+	GND  - 34
+	RST  - Not Connected
+	3V3  - 33
+I was connecting SDA, SCK, MOSI and MISO to spidev1.2
+I was powering the MFRC522 using GPIO 33, since I didnt have a free 3v3 pin.
 Before running it, I had to make few changes to Dump.py
 	#Tell Dump.py which spi device to use for connecting to MFRC522 reader
 	MIFAREReader = MFRC522.MFRC522(dev='/dev/spidev1.2')

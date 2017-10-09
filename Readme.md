@@ -90,6 +90,7 @@ The guide also uses virtual environments, but we dont need to use virtual enviro
 		* ALLOWED_HOSTS
 		* DATABASES
 		* STATIC_ROOT
+		* TIME_ZONE
 	* Run `python manage.py collectstatic`
 	* Test gunicorn by running `gunicorn --bind 0.0.0.0:8000 mess.wsgi`, and checking the website from browser.  
 	The website will not have any style, since gunicorn does not know about the CSS responsible for this

@@ -4,9 +4,7 @@ Done:
 	Time : Fixed using htpdate and cron instead of NTP
 	
 Todo:
-	Set the TIMEZONE in django settings
-
-	Deploying in nginx
+	Test master and if successful, release version2.x
 
 	Writing documentation from scratch
 

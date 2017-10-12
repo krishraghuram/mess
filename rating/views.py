@@ -83,6 +83,12 @@ class ReadView(View):
 		if meal=="":
 			messages.error(request, "Mess is closed. Please come back during next meal.")
 			return render(request, 'rating/error.html')
+		#Check if user already gave feedback for this meal
+		temp = list(Activity.objects.filter(user=user))
+		temp = [(i.timestamp.day, i.meal) for i in temp]
+		if (datetime.datetime.now().day, meal) in temp:
+			messages.error(request, "You have already given feedback for this month. Come back next month :D")
+			return render(request, 'rating/error.html')
 
 		#Login the user
 		login(request, user)

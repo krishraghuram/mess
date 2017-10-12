@@ -81,6 +81,12 @@ class ReadView(View):
 		if meal=="":
 			messages.error(request, "Mess is closed. Please come back during next meal.")
 			return render(request, 'rating/error.html')
+		#Check if user already gave feedback for this month
+		temp = list(Activity.objects.filter(user=user))
+		temp = [i.timestamp.month for i in temp]
+		if datetime.datetime.now().month in temp:
+			messages.error(request, "You have already given feedback for this month. Come back next month :D")
+			return render(request, 'rating/error.html')
 
 		#Login the user
 		login(request, user)
@@ -110,9 +116,12 @@ class RatingView(View):
 			dinner         =   request.POST.get("dinner")
 			hostel = request.user.profile.subscribed_hostel
 			meal = get_meal()
-			if meal=="": #Once again, make sure mess is open
+			
+			#Once again, make sure mess is open
+			if meal=="":
 				messages.error(request, "Mess is closed. Please come back during next meal.")
 				return render(request, 'rating/error.html')
+
 			#Save it in activity
 			temp = Activity(
 				user=request.user, 

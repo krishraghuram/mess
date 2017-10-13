@@ -85,7 +85,7 @@ class ReadView(View):
 		temp = list(Activity.objects.filter(user=user))
 		temp = [(i.timestamp.day, i.meal) for i in temp]
 		if (datetime.datetime.now().day, meal) in temp:
-			messages.error(request, "You have already given feedback for this month. Come back next month :D")
+			messages.error(request, "You have already given feedback for this meal. Come back next meal :D")
 			return render(request, 'rating/error.html')
 
 		#Login the user

@@ -1,5 +1,45 @@
+23rd September
+MFRC522 Reader uses SPI to communicate with RPi.
+	We were using MFRC522-python and SPI-py which used the RPi's SPI Bus 0 Channel 0
+The 3.5 Inch Screen also uses SPI to communicate with reader.
+	The 3.5 inch screen probably uses both channels of SPI Bus 0(one for LCD and one for touch)
+	Source : 
+		http://www.waveshare.com/3.5inch-rpi-lcd-a.htm 
+		(Look at interface subsection)
+RPI SPI
+	The raspberry pi has a SPI Bus 1 which has 3 channels. So, technically, we can let the 3.5 inch display use the SPI Bus 0(Both Channels), and have the MFRC522 reader use the SPI Bus 1.
+	After a bit of searching, I found this,
+		http://elinux.org/RPi_SPI#Linux_driver
+		Adding dtoverlay=spi1-1cs  #1 chip select to /boot/config.txt and rebooting,
+		I got 3 new spidevices(ls /dev | grep spi). I now had, 
+			spidev0.0, spidev0.1, spidev1.0, spidev1.1, spidev1.2
+	Tried to use MFRC522-python + SPI-py with spidev1.0
+		It worked perfectly
+3v3 Pin Problem
+	Now, MFRC522 reader uses pins
+		MOSI     - 38
+		MISO     - 35
+		SCLK     - 40
+		SDA(CE2) - 36
+		GND      - 34
+	For 3v3, I am stuck. Because the only 3v3 pin is Pin 1 - and that is blocked by the 3.5 Inch Screen.
+	I quickly found a hack - I used Pin 33 - GPIO 13 as a 3v3 supply.
+		import RPi.GPIO as GPIO
+		GPIO.setmode(GPIO.BOARD)
+		GPIO.setup(33, GPIO.OUT)
+		GPIO.output(33, True)  #Supply 3v3 to MFRC522
+		GPIO.output(33, False) #Switch off MFRC522 Reader
+All I need to do now is test them both simultaneously.
+
+
+
+
+
+
+
+
 24th Sept 2017
-Tried to connect screen and reader at same time and work. 
+Tried to connect screen and reader simultaneously. 
 It does not work. 
 Basically, the dtoverlays for waveshare35a and spi1-3cs are conflicting in /boot/config.txt
 Need to figure this out

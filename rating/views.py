@@ -10,8 +10,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import Profile, Activity
 from MFRC522python import util
-import multiprocessing
-import time
 import constants
 from django.db import IntegrityError
 import datetime

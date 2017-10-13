@@ -86,11 +86,26 @@ The guide uses postgresql, but we plan to use mariadb - so make necessary change
 The guide also uses virtual environments, but we dont need to use virtual environment in production - so make necessary adjustments.  
 	* Run `sudo apt-get install nginx`
 	* Run `sudo -E -H pip install gunicorn`
-	* Go to project folder and open settings.py. If necessary, set or change
+	* [The django deployment checklist](https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/)  
+	The following need to be set with appropriate values.
+		* TIME_ZONE - extremely important in checking if mess is open.
+		* STATIC_ROOT and STATIC_URL
+		* SECRET_KEY
+		* Ensure that database password is taken from environment variable, instead of passing it as cleartext in the settings file.
+		* DEBUG
 		* ALLOWED_HOSTS
-		* DATABASES
-		* STATIC_ROOT
-		* TIME_ZONE
+		* LOGGING
+		* MEDIA_ROOT and MEDIA_URL
+	* Secret Key and Database Passwords should be taken from environment.  
+	However, gunicorn will not use the variables from bashrc(both user and root do not work) or /etc/environment  
+	So, to set env variables for gunicorn - Follow this [link](https://www.digitalocean.com/community/questions/gunicorn-service-can-t-read-environment-variables)  
+	**TL; DR instructions**
+		* Create a file in /somepath/ called somefile, and put the following contents.  
+		You might need to change the values.
+		```
+		SECRET_KEY="alkvno39u109jgl1knfocyr9183ryo1hfo1c8n"
+		DATABASE_PASSWORD="totallymypass"
+		``` 
 	* Run `python manage.py collectstatic`
 	* Test gunicorn by running `gunicorn --bind 0.0.0.0:8000 mess.wsgi`, and checking the website from browser.  
 	The website will not have any style, since gunicorn does not know about the CSS responsible for this

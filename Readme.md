@@ -151,3 +151,10 @@ The guide also uses virtual environments, but we dont need to use virtual enviro
 		* Run `sudo systemctl restart nginx`
 	* Open a browser and check the website. It should be up and running on port 80.  
 	If you are facing problems, please check the above link. The guide has some instructions about troubleshooting.
+
+14) Set up RPi to run as a [Kiosk](https://fosskb.in/2017/01/14/building-a-raspberry-pi-kiosk/)
+	* Im not writing specific instructions because the blog is very well written. 
+	* **Notes**
+		* When I tried to use the `while` loop in `.xsession`, it didnt work. 
+		* For running `sudo insserv /etc/init.d/aaa` you might need to first install insserv by typing `sudo apt-get install insserv`
+	* **Request** : For the splash image, use the IITG Logo

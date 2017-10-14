@@ -100,12 +100,20 @@ The guide also uses virtual environments, but we dont need to use virtual enviro
 	However, gunicorn will not use the variables from bashrc(both user and root do not work) or /etc/environment  
 	So, to set env variables for gunicorn - Follow this [link](https://www.digitalocean.com/community/questions/gunicorn-service-can-t-read-environment-variables)  
 	**TL; DR instructions**
-		* Create a file in /somepath/ called somefile, and put the following contents.  
+		* Create a file in `/home/pi/mess` called `django_environment_variables`, and put the following contents.  
 		You might need to change the values.
 		```
 		SECRET_KEY="alkvno39u109jgl1knfocyr9183ryo1hfo1c8n"
 		DATABASE_PASSWORD="totallymypass"
 		``` 
+		* Below, when we create gunicorn.service file, we will add a reference to **/home/pi/mess/django_environment_variables**
+		* For running `python manage.py <somecommand>`, you need the SECRET_KEY and DATABASE_PASSWORD in the environment. The simplest way to do this is to add a `export` them from bashrc.
+			* `nano ~/.bashrc`
+			```
+			#Django
+			export SECRET_KEY="alkvno39u109jgl1knfocyr9183ryo1hfo1c8n"
+			export DATABASE_PASSWORD="mess"
+			```
 	* Run `python manage.py collectstatic`
 	* Test gunicorn by running `gunicorn --bind 0.0.0.0:8000 mess.wsgi`, and checking the website from browser.  
 	The website will not have any style, since gunicorn does not know about the CSS responsible for this
@@ -121,6 +129,7 @@ The guide also uses virtual environments, but we dont need to use virtual enviro
 		User=pi
 		Group=www-data
 		WorkingDirectory=/home/pi/mess
+		EnvironmentFile=/home/pi/mess/django_environment_variables
 		ExecStart=/usr/local/bin/gunicorn --access-logfile - --workers 1 --bind unix:/home/pi/mess/mess.sock mess.wsgi:application
 
 		[Install]

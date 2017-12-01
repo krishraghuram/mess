@@ -1,5 +1,8 @@
 ## Mess Feedback System using RFID
 
+### License
+This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
+
 ### Instructions
 
 1) Hardware used

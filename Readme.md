@@ -59,7 +59,7 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
     	* Save and Exit
 
 9) Setting up MFRC522 Reader and 3.5 Inch Screen
-	* Quickstart to "git submodules"
+	* Quickstart to "git submodules" - https://git-scm.com/book/en/v2/Git-Tools-Submodules
 	* Follow the "Todo" file in the submodule mess-rpisetup
 	* Complete it and Test it before continuing!!!
 

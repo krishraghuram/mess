@@ -59,8 +59,8 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
     	* Save and Exit
 
 9) Setting up MFRC522 Reader and 3.5 Inch Screen
-	* Clone https://github.com/krishraghuram/mess-rpisetup
-	* Follow all instructions in "Todo" file
+	* Quickstart to "git submodules"
+	* Follow the "Todo" file in the submodule mess-rpisetup
 	* Complete it and Test it before continuing!!!
 
 10) Install MariaDB and Create databases that will be used by django.

@@ -37,6 +37,8 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
 5) Set up proxy
 	* In /etc/apt/apt.conf
 	* In ~/.bashrc
+	* For information on how to set proxy in apt.conf and bashrc, you can look at https://medium.com/@krish.raghuram/setting-up-proxy-in-ubuntu-95058da0b2d4
+	* Though the above post is for ubuntu, the changes to be made to apt.conf and bashrc files are exactly the same for raspbian as well.
 
 6) SSH
 	* Test SSH

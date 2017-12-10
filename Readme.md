@@ -9,7 +9,7 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
 	* Raspberry Pi 3
 	* 16 GB SD Card
 	* Power supply cable for Pi
-	* 3.5 inch screen for RPi
+	* Screen for Rpi(Setup steps given for Waveshare 3.5 inch or Waveshare 7 inch screen)
 	* MFRC522 RFID card reader
 	* HDMI Display, Keyboard and Mouse (For initial setup)
 

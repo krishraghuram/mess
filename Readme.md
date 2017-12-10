@@ -79,19 +79,17 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
 		* GRANT ALL PRIVILEGES ON mess . * TO 'mess'@'localhost';
 		* FLUSH PRIVILEGES;
 
-11) Go to the project folder that you cloned in step 9(mess project)
-	* sudo -E -H pip install -r requirements.txt
-	* Checkout the needed version(using git)
-
-12) Setup and test the django project
+11) Setup and test the django project
 	* Go to the project folder
+	* sudo -E -H pip install -r requirements.txt
+	* Checkout the needed version(using git)	
 	* `python manage.py makemigrations`
 	* `python manage.py migrate`
 	* `python manage.py createsuperuser`
 	* `python manage.py runserver 0.0.0.0:8000`
 	* Go to a web browser and type '127.0.0.1:8000' and test if the website is working
 
-13) Deploy using Gunicorn and Nginx. You can follow this [link](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-16-04).  
+12) Deploy using Gunicorn and Nginx. You can follow this [link](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-16-04).  
 The guide uses postgresql, but we plan to use mariadb - so make necessary changes.  
 The guide also uses virtual environments, but we dont need to use virtual environment in production - so make necessary adjustments.  
 	* Run `sudo apt-get install nginx`
@@ -171,7 +169,7 @@ The guide also uses virtual environments, but we dont need to use virtual enviro
 	* Open a browser and check the website. It should be up and running on port 80.  
 	If you are facing problems, please check the above link. The guide has some instructions about troubleshooting.
 
-14) Set up RPi to run as a [Kiosk](https://fosskb.in/2017/01/14/building-a-raspberry-pi-kiosk/)
+13) Set up RPi to run as a [Kiosk](https://fosskb.in/2017/01/14/building-a-raspberry-pi-kiosk/)
 	* Im not writing specific instructions because the blog is very well written. 
 	* **Notes**
 		* When I tried to use the `while` loop in `.xsession`, it didnt work. 

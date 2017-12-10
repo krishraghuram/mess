@@ -25,8 +25,7 @@ class ActivityAdmin(admin.ModelAdmin):
 		'breakfast',
 		'lunch',
 		'dinner',
-		'hostel', 
-		'meal'
+		'hostel'
 		)
 	readonly_fields = (
 		'timestamp', 
@@ -36,11 +35,10 @@ class ActivityAdmin(admin.ModelAdmin):
 		'breakfast',
 		'lunch',
 		'dinner',
-		'hostel', 
-		'meal'
+		'hostel'
 		)
 	list_display = ('timestamp', 'get_profile_name')
-	list_filter = ('hostel','meal')
+	list_filter = ('hostel',)
 
 	def has_add_permission(self, request):
 		return False

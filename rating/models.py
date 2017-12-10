@@ -46,7 +46,6 @@ class Activity(models.Model):
 	dinner        =   models.IntegerField("Dinner"                   , validators=[validate_ratingrange])
 
 	hostel = models.CharField(max_length=20, choices=constants.hostels)
-	meal = models.CharField(max_length=10, choices=constants.meals)
 
 	def get_profile_name(self):
 		return str(self.user.profile.name)

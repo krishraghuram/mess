@@ -2,11 +2,14 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin, ExportMixin
+from .resources import ProfileResource, ActivityResource
 from .models import Profile, Activity
 
 # Register your models here.
 
-class ProfileAdmin(admin.ModelAdmin):
+class ProfileAdmin(ImportExportModelAdmin):
+	resource_class = ProfileResource
 	fields = ('rfid', 'rollno', 'name', 'resident_hostel', 'subscribed_hostel')
 	readonly_fields = ('rfid', 'rollno')
 	list_display = ('get_name','rollno')
@@ -16,7 +19,8 @@ class ProfileAdmin(admin.ModelAdmin):
 
 
 
-class ActivityAdmin(admin.ModelAdmin):
+class ActivityAdmin(ExportMixin, admin.ModelAdmin):
+	resource_class = ActivityResource
 	fields = (
 		'timestamp', 
 		'get_profile_name', 

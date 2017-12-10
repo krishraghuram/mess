@@ -79,7 +79,7 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
 		* GRANT ALL PRIVILEGES ON mess . * TO 'mess'@'localhost';
 		* FLUSH PRIVILEGES;
 
-11) Go to the project folder
+11) Go to the project folder that you cloned in step 9(mess project)
 	* sudo -E -H pip install -r requirements.txt
 	* Checkout the needed version(using git)
 

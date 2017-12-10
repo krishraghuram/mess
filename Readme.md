@@ -79,8 +79,7 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
 		* GRANT ALL PRIVILEGES ON mess . * TO 'mess'@'localhost';
 		* FLUSH PRIVILEGES;
 
-11) Clone this repo - https://github.com/krishraghuram/mess.git
-	* Go to the project folder
+11) Go to the project folder
 	* sudo -E -H pip install -r requirements.txt
 	* Checkout the needed version(using git)
 

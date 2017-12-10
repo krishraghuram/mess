@@ -23,6 +23,7 @@ class Profile(models.Model):
 			return "New User"+"("+self.rollno+")"
 		else: 
 			return self.name
+	get_name.short_description = "Name"
 
 
 
@@ -49,6 +50,7 @@ class Activity(models.Model):
 
 	def get_profile_name(self):
 		return str(self.user.profile.name)
+	get_profile_name.short_description = "Profile Name"
 
 	class Meta:
 		verbose_name="Activity"

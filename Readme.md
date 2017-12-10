@@ -60,10 +60,16 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
     	`* * * * * /usr/sbin/htpdate -s intranet.iitg.ernet.in`
     	* Save and Exit
 
-9) Setting up MFRC522 Reader and 3.5 Inch Screen
-	* Quickstart to "git submodules" - https://git-scm.com/book/en/v2/Git-Tools-Submodules
-	* Follow the "Todo" file in the submodule mess-rpisetup
+9) Setting up Screen and MFRC522 Reader
+	* `git clone https://github.com/krishraghuram/mess`
+	* `cd mess`
+	* `git submodule init`
+	* `git submodule update`
+	* `cd mess-rpisetup`
+	* Checkout branch `waveshare7` or `waveshare3.5` depending on the screen you want to use
+	* Follow the instructions in the "Todo" file
 	* Complete it and Test it before continuing!!!
+	* Also, quickstart to "git submodules" - https://git-scm.com/book/en/v2/Git-Tools-Submodules
 
 10) Install MariaDB and Create databases that will be used by django.
 	* sudo apt-get install mariadb-server libmariadbclient-dev

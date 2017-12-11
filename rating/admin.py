@@ -10,12 +10,10 @@ from .models import Profile, Activity
 
 class ProfileAdmin(ImportExportModelAdmin):
 	resource_class = ProfileResource
-	fields = ('rfid', 'rollno', 'name', 'resident_hostel', 'subscribed_hostel')
-	readonly_fields = ('rfid', 'rollno')
+	fields = ('rollno', 'name', 'resident_hostel', 'subscribed_hostel')
 	list_display = ('get_name','rollno')
 
-	def has_add_permission(self, request):
-		return False
+
 
 
 
@@ -47,6 +45,9 @@ class ActivityAdmin(ExportMixin, admin.ModelAdmin):
 	def has_add_permission(self, request):
 		return False
 
+	def has_delete_permission(self, request, obj=None):
+		return False
+
 
 
 admin.site.register(Profile, ProfileAdmin)
@@ -58,5 +59,5 @@ admin.site.register(Activity, ActivityAdmin)
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
-admin.site.unregister(User)
-admin.site.unregister(Group)
+# admin.site.unregister(User)
+# admin.site.unregister(Group)

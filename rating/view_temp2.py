@@ -37,30 +37,48 @@ class ReadView(View):
 		rfid = '1'
 		rollno = '130102051'
 
-		#Search for card in Users
+		#User and Profile creation
 		try:
-			user = User.objects.get(profile__rfid=rfid)
-		except User.DoesNotExist: #If new user
+			#Get user and profile. Also validate profile
+			user = User.objects.get(username=rollno)
 			try:
-				#Create a new user object for him
-				newuser = User.objects.create_user(username=rollno,password="USELESS_PASS")
-			except IntegrityError: #Edge case that occurs when there is inconsistency between Users and Profiles.
-				newuser = User.objects.get(username=rollno)
-			#We do this so that the user's password can never be used. User's password for all purposes will be the RFID card.
-			newuser.set_unusable_password()
+				profile = user.profile
+				if profile.rollno!=user.username:
+					messages.error(request, "Roll Number incorrect in HAB Profile. Contact HAB.")
+					return render(request, 'rating/error.html')	
+				if profile.subscribed_hostel is None or profile.subscribed_hostel=='':
+					messages.error(request, "Subscribed Hostel is empty in HAB Profile. Contact HAB.")
+					return render(request, 'rating/error.html')	
+			except Profile.DoesNotExist:
+				#Try to find the profile
+				try:
+					profile = Profile.objects.get(rollno=rollno)
+					profile.user = newuser
+					profile.save()
+				except Profile.DoesNotExist:
+					messages.error(request, "HAB Profile not found for roll number : "+rollno)
+					messages.error(request, "Contact HAB")
+					return render(request, 'rating/error.html')	
+		except User.DoesNotExist: #If new user
+			#Create a new user
+			newuser = User.objects.create_user(username=rollno, password=rfid)
 			newuser.save()
-			#Create a new profile object for the user
-			newprofile = Profile(user=newuser, rfid=rfid, rollno=rollno)
-			newprofile.save()
-			#Send a message to the user and render the error page
-			messages.error(request, "New user created. Contact hostel authorities for approval.")
-			return render(request, 'rating/error.html')
+			#Find matching profile using rollno, and set profile.user
+			try:
+				profile = Profile.objects.get(rollno=rollno)
+				profile.user = newuser
+				profile.save()
+			except Profile.DoesNotExist: #If profile does not exist
+				# Return an error page
+				messages.error(request, "HAB Profile not found for roll number : "+rollno)
+				messages.error(request, "Contact HAB")
+				return render(request, 'rating/error.html')	
 
-		#Make sure user has registered with hostel authorities
-		p = user.profile
-		if p.name=='' or p.resident_hostel=='' or p.subscribed_hostel=='':
-			messages.error(request, "User details empty. Contact hostel authorities for approval.")
-			return render(request, 'rating/error.html')
+		# #Make sure user has registered with hostel authorities
+		# p = user.profile
+		# if p.name=='' or p.resident_hostel=='' or p.subscribed_hostel=='':
+		# 	messages.error(request, "User details empty. Contact hostel authorities for approval.")
+		# 	return render(request, 'rating/error.html')
 
 		#Login the user
 		login(request, user)

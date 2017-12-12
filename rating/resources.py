@@ -2,7 +2,7 @@ from import_export import resources, fields
 from .models import Profile, Activity
 
 class ProfileResource(resources.ModelResource):
-	rollno 				= fields.Field(attribute = 'rollno', column_name = 'Roll Number', readonly = True) #Ensure rollno cannot be imported
+	rollno 				= fields.Field(attribute = 'rollno', column_name = 'Roll Number') #Ensure rollno cannot be imported
 	name 				= fields.Field(attribute = 'name', column_name = 'Name')
 	resident_hostel 	= fields.Field(attribute = 'resident_hostel', column_name = 'Resident Hostel')
 	subscribed_hostel 	= fields.Field(attribute = 'subscribed_hostel', column_name = 'Subscribed Hostel')

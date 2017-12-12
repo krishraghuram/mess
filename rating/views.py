@@ -34,8 +34,8 @@ class ReadView(View):
 		# except: #Any kind of exception
 		# 	messages.error(request, "Error while reading card. Try once more.")
 		# 	return render(request, 'rating/error.html')
-		rfid = '2'
-		rollno = '2'
+		rfid = '3'
+		rollno = '3'
 
 		#Search for card in Users
 		try:
@@ -64,8 +64,8 @@ class ReadView(View):
 
 		#Validate user and profile
 		#Check user.password == rfid 
-		if not user.check_password(rfid):
-			messages.error(request, "RFID incorrect. Did you tamper with your card?")
+		if not user.check_password(rfid): 
+			messages.error(request, "Roll Number or RFID incorrect. Did you tamper with your card?")
 			return render(request, 'rating/error.html')
 		#Check profile.subscribed_hostel!=None or profile.subscribed_hostel!=''
 		if profile.subscribed_hostel==None or profile.subscribed_hostel=='':
@@ -102,7 +102,7 @@ class RatingView(View):
 
 			#Save it in activity
 			temp = Activity(
-				user=request.user, 
+				profile=request.user.profile, 
 				cat_and_punct=cat_and_punct, 
 				cleanliness=cleanliness,
 				breakfast=breakfast,

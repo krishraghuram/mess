@@ -13,7 +13,12 @@ class ProfileAdmin(ImportExportModelAdmin):
 	fields = ('rollno', 'name', 'resident_hostel', 'subscribed_hostel')
 	list_display = ('get_name','rollno')
 
-
+	#Make rollno readonly on update, but writable during creation
+	def get_readonly_fields(self, request, obj=None):
+		if obj: #This is the case when obj is already created i.e. it's an edit
+			return ['rollno']
+		else:
+			return []
 
 
 

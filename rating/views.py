@@ -34,32 +34,42 @@ class ReadView(View):
 		# except: #Any kind of exception
 		# 	messages.error(request, "Error while reading card. Try once more.")
 		# 	return render(request, 'rating/error.html')
-		rfid = '1'
-		rollno = '130102051'
+		rfid = '2'
+		rollno = '2'
 
 		#Search for card in Users
 		try:
-			user = User.objects.get(profile__rfid=rfid)
-		except User.DoesNotExist: #If new user
+			user = User.objects.get(username=rollno)
 			try:
-				#Create a new user object for him
-				newuser = User.objects.create_user(username=rollno,password="USELESS_PASS")
-			except IntegrityError: #Edge case that occurs when there is inconsistency between Users and Profiles.
-				newuser = User.objects.get(username=rollno)
-			#We do this so that the user's password can never be used. User's password for all purposes will be the RFID card.
-			newuser.set_unusable_password()
-			newuser.save()
-			#Create a new profile object for the user
-			newprofile = Profile(user=newuser, rfid=rfid, rollno=rollno)
-			newprofile.save()
-			#Send a message to the user and render the error page
-			messages.error(request, "New user created. Contact hostel authorities for approval.")
-			return render(request, 'rating/error.html')
+				profile = user.profile
+			except Profile.DoesNotExist:
+				try:
+					profile = Profile.objects.get(rollno=rollno)
+					profile.user = user
+					profile.save()
+				except Profile.DoesNotExist:
+					messages.error(request, "HAB Profile does not exist for roll number : "+rollno)
+					return render(request, 'rating/error.html')
+		#Create User
+		except User.DoesNotExist: 
+			user = User.objects.create_user(username=rollno,password=rfid)
+			user.save()
+			try:
+				profile = Profile.objects.get(rollno=rollno)
+				profile.user = user
+				profile.save()
+			except Profile.DoesNotExist:
+				messages.error(request, "HAB Profile does not exist for roll number : "+rollno)
+				return render(request, 'rating/error.html')
 
-		#Make sure user has registered with hostel authorities
-		p = user.profile
-		if p.name=='' or p.resident_hostel=='' or p.subscribed_hostel=='':
-			messages.error(request, "User details empty. Contact hostel authorities for approval.")
+		#Validate user and profile
+		#Check user.password == rfid 
+		if not user.check_password(rfid):
+			messages.error(request, "RFID incorrect. Did you tamper with your card?")
+			return render(request, 'rating/error.html')
+		#Check profile.subscribed_hostel!=None or profile.subscribed_hostel!=''
+		if profile.subscribed_hostel==None or profile.subscribed_hostel=='':
+			messages.error(request, "Subscribed Hostel empty in HAB Profile")
 			return render(request, 'rating/error.html')
 
 		#Login the user

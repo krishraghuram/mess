@@ -38,7 +38,6 @@ def validate_ratingrange(value):
 class Activity(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True, unique=True)
 	profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-	# user = models.ForeignKey(User, on_delete=models.CASCADE)
 	
 	cat_and_punct =   models.IntegerField("Catering and Punctuality" , validators=[validate_ratingrange])
 	cleanliness   =   models.IntegerField("Cleanliness"              , validators=[validate_ratingrange])

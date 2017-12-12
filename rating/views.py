@@ -9,10 +9,24 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import Profile, Activity
-# from MFRC522python import util
 import constants
 from django.db import IntegrityError
 import datetime
+
+def get_card():
+	from MFRC522python import util	
+	try:
+		data = util.readcard(constants.read_timeout)
+		if data and len(data)==2:
+			rfid = data[0]
+			rollno = data[1]
+			return (rfid, rollno)
+		else:
+			messages.error(request, "Could not read card. Try again later.")
+			return render(request, 'rating/error.html')
+	except: #Any kind of exception
+		messages.error(request, "Error while reading card. Try once more.")
+		return render(request, 'rating/error.html')	
 
 # Create your views here.
 
@@ -22,20 +36,8 @@ class ReadView(View):
 		if request.user.is_authenticated: 
 			logout(request)
 
-		# #Try to read card.
-		# try:
-		# 	data = util.readcard(constants.read_timeout)
-		# 	if data and len(data)==2:
-		# 		rfid = data[0]
-		# 		rollno = data[1]
-		# 	else:
-		# 		messages.error(request, "Could not read card. Try again later.")
-		# 		return render(request, 'rating/error.html')
-		# except: #Any kind of exception
-		# 	messages.error(request, "Error while reading card. Try once more.")
-		# 	return render(request, 'rating/error.html')
-		rfid = '3'
-		rollno = '3'
+		#Try to read card.
+		(rfid,rollno) = get_card()
 
 		#Search for card in Users
 		try:
@@ -63,13 +65,13 @@ class ReadView(View):
 				return render(request, 'rating/error.html')
 
 		#Validate user and profile
-		#Check user.password == rfid 
+		#Check if user tampered with card
 		if not user.check_password(rfid): 
 			messages.error(request, "Roll Number or RFID incorrect. Did you tamper with your card?")
 			return render(request, 'rating/error.html')
-		#Check profile.subscribed_hostel!=None or profile.subscribed_hostel!=''
-		if profile.subscribed_hostel==None or profile.subscribed_hostel=='':
-			messages.error(request, "Subscribed Hostel empty in HAB Profile")
+		#Check if subscribed hostel is set properly
+		if profile.subscribed_hostel not in dict(constants.hostels).values():
+			messages.error(request, "Subscribed Hostel incorrect in HAB Profile")
 			return render(request, 'rating/error.html')
 
 		#Login the user

@@ -14,19 +14,24 @@ from django.db import IntegrityError
 import datetime
 
 def get_card():
-	from MFRC522python import util	
 	try:
-		data = util.readcard(constants.read_timeout)
-		if data and len(data)==2:
-			rfid = data[0]
-			rollno = data[1]
-			return (rfid, rollno)
-		else:
-			messages.error(request, "Could not read card. Try again later.")
+		from MFRC522python import util
+		try:
+			data = util.readcard(constants.read_timeout)
+			if data and len(data)==2:
+				rfid = data[0]
+				rollno = data[1]
+				return (rfid, rollno)
+			else:
+				messages.error(request, "Could not read card. Try again later.")
+				return render(request, 'rating/error.html')
+		except: #Any kind of exception
+			messages.error(request, "Error while reading card. Try once more.")
 			return render(request, 'rating/error.html')
-	except: #Any kind of exception
-		messages.error(request, "Error while reading card. Try once more.")
-		return render(request, 'rating/error.html')	
+	except: #Not running on R-Pi
+		rfid = "1"
+		rollno = "1"
+		return (rfid, rollno)
 
 # Create your views here.
 

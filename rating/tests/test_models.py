@@ -14,7 +14,7 @@ class ProfileTests(TestCase):
 
 	def test_user_delete(self):
 		#Create user and profile
-		user = User(username="username", password="password")
+		user = User(username="1", password="1")
 		user.save()
 		profile = Profile(user=user, rollno="1", name="A", resident_hostel="Umiam", subscribed_hostel="Umiam")
 		profile.save()

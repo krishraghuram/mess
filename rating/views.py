@@ -12,6 +12,7 @@ from .models import Profile, Activity
 import constants
 from django.db import IntegrityError
 import datetime
+from mess import settings
 
 def get_card():
 	try:
@@ -29,9 +30,7 @@ def get_card():
 			messages.error(request, "Error while reading card. Try once more.")
 			return render(request, 'rating/error.html')
 	except: #Not running on R-Pi
-		rfid = "1"
-		rollno = "1"
-		return (rfid, rollno)
+		return (None, None)
 
 # Create your views here.
 
@@ -41,8 +40,12 @@ class ReadView(View):
 		if request.user.is_authenticated: 
 			logout(request)
 
-		#Try to read card.
+		#Try to read card
 		(rfid,rollno) = get_card()
+		#Purely for testing
+		if settings.DEBUG==True and rfid is None and rollno is None:
+			rfid = request.GET.get('rfid')
+			rollno = request.GET.get('rollno')
 
 		#Search for card in Users
 		try:
@@ -74,9 +77,15 @@ class ReadView(View):
 		if not user.check_password(rfid): 
 			messages.error(request, "Roll Number or RFID incorrect. Did you tamper with your card?")
 			return render(request, 'rating/error.html')
-		#Check if subscribed hostel is set properly
-		if profile.subscribed_hostel not in dict(constants.hostels).values():
-			messages.error(request, "Subscribed Hostel incorrect in HAB Profile")
+		#Validate Profile
+		try:
+			profile.full_clean()
+		except Exception as e:
+			for (key,value) in e.message_dict.iteritems():
+				key = key.replace("_"," ")
+				key = key.title()
+				for item in value:
+					messages.error(request, key + " : " + item)
 			return render(request, 'rating/error.html')
 
 		#Login the user

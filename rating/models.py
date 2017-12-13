@@ -11,7 +11,7 @@ import constants
 # Create your models here.
 
 class Profile(models.Model):
-	user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
+	user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
 	rollno = models.CharField(max_length=20, unique=True)
 	name = models.CharField(max_length=100)
 	resident_hostel = models.CharField(max_length=20, choices=constants.hostels)

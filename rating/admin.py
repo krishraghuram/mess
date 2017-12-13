@@ -11,7 +11,7 @@ from .models import Profile, Activity
 class ProfileAdmin(ImportExportModelAdmin):
 	resource_class = ProfileResource
 	fields = ('rollno', 'name', 'resident_hostel', 'subscribed_hostel')
-	list_display = ('get_name','rollno')
+	list_display = ('pretty_name','rollno')
 
 	#Make rollno readonly on update, but writable during creation
 	def get_readonly_fields(self, request, obj=None):

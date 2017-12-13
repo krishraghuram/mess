@@ -41,3 +41,41 @@ class ProfileTests(TestCase):
 		profile = Profile(rollno="1", name="A", resident_hostel="Umiam", subscribed_hostel="Umiam")
 		profile.save()
 		self.assertEquals(profile.pretty_name(),'A')
+
+
+
+
+
+class ActivityResource(TestCase):
+	def test_timestamp_auto(self):
+		#Test 1
+		#Create stuff
+		profile = Profile(rollno="1", name="A", resident_hostel="Umiam", subscribed_hostel="Umiam")
+		profile.save()
+		activity = Activity(hostel="Umiam", profile=profile, cat_and_punct=1, cleanliness=2, breakfast=3, lunch=4, dinner=5)
+		activity.save()
+		#Assert
+		self.assertIsNotNone(activity.timestamp)
+		#Test 2
+		#Create stuff
+		import datetime
+		from django.utils import timezone
+		t = timezone.now() - datetime.timedelta(days=1)
+		activity = Activity(timestamp=t, hostel="Umiam", profile=profile, cat_and_punct=1, cleanliness=2, breakfast=3, lunch=4, dinner=5)
+		activity.save()
+		#Assert
+		self.assertNotEquals(activity.timestamp, t)
+
+	def test_profile_delete_cascade(self):
+		#Create stuff
+		profile = Profile(rollno="1", name="A", resident_hostel="Umiam", subscribed_hostel="Umiam")
+		profile.save()
+		activity = Activity(hostel="Umiam", profile=profile, cat_and_punct=1, cleanliness=2, breakfast=3, lunch=4, dinner=5)
+		activity.save()
+		#Delete profile
+		profile.delete()
+		#Assert
+		self.assertEquals(len(Activity.objects.all()), 0)
+
+
+

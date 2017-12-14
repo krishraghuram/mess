@@ -72,8 +72,7 @@ class ReadView(View):
 				messages.error(request, "HAB Profile does not exist for roll number : "+rollno)
 				return render(request, 'rating/error.html')
 
-		#Validate user and profile
-		#Check if user tampered with card
+		#Validate User
 		if not user.check_password(rfid): 
 			messages.error(request, "Roll Number or RFID incorrect. Did you tamper with your card?")
 			return render(request, 'rating/error.html')
@@ -81,6 +80,7 @@ class ReadView(View):
 		try:
 			profile.full_clean()
 		except Exception as e:
+			messages.error(request, "Profile Validation Error")
 			for (key,value) in e.message_dict.iteritems():
 				key = key.replace("_"," ")
 				key = key.title()
@@ -103,7 +103,7 @@ class RatingView(View):
 		if request.user.is_authenticated: 
 			return render(request, 'rating/submitrating.html')
 		else:
-			messages.error(request, "You are not authorized to view this page.")
+			messages.error(request, "You are not authorized to view this page")
 			return render(request, 'rating/error.html')
 
 	def post(self, request, *args, **kwargs):
@@ -126,12 +126,25 @@ class RatingView(View):
 				dinner=dinner,
 				hostel=hostel
 				)
-			temp.save()
-			
-			#Logout the user
-			logout(request)
-			#Render a thank you page
-			return render(request, 'rating/thankyou.html')
+			#Validate Activity
+			try:
+				temp.full_clean()
+				temp.save()
+				#Logout the user
+				logout(request)
+				#Render a thank you page
+				return render(request, 'rating/thankyou.html')
+			except Exception as e:
+				messages.error(request, "Activity Validation Error")
+				for (key,value) in e.message_dict.iteritems():
+					key = key.replace("_"," ")
+					key = key.title()
+					for item in value:
+						messages.error(request, key + " : " + item)
+				return render(request, 'rating/error.html')			
+		else:
+			messages.error(request, "You are not authorized to access this")
+			return render(request, 'rating/error.html')
 
 
 

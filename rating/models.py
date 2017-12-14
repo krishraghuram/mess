@@ -31,7 +31,7 @@ class Profile(models.Model):
 def validate_ratingrange(value):
 	if value < constants.rating_low or value > constants.rating_high:
 		raise ValidationError(
-			'%(value)s is out of bound for rating',
+			'%(value)s is out of bound',
 			params={'value': value},
 		)
 

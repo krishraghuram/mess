@@ -126,7 +126,16 @@ class ReadTests(TestCase):
 	###########################################
 	###Validation Tests in ReadView
 	###########################################
-	# def test_password(self):
+	def test_password_check(self):
+		#Client Action
+		profile = Profile(rollno="1", name="A", resident_hostel="Umiam", subscribed_hostel="Umiam")
+		profile.save()
+		response = self.client.get(reverse("rating:read")+"?rfid=1&rollno=1", follow=True)
+		#Client Action
+		response = self.client.get(reverse("rating:read")+"?rfid=2&rollno=1", follow=True)
+		#Assert roll number or rfid incorrect
+		self.assertEquals(response.status_code, 200)
+		self.assertContains(response, "Roll Number or RFID incorrect")
 
 	def test_resident_hostel_empty(self):
 		#Client Action
@@ -164,8 +173,27 @@ class ReadTests(TestCase):
 		self.assertEquals(response.status_code, 200)
 		self.assertContains(response, "is not a valid choice.")
 
-	# def test_double_feedback(self):
-
+	def test_double_feedback(self):
+		#Client Action
+		profile = Profile(rollno="1", name="A", resident_hostel="Umiam", subscribed_hostel="Umiam")
+		profile.save()
+		response = self.client.get(reverse("rating:read")+"?rfid=1&rollno=1", follow=True)
+		data = {
+		"catering_and_punctuality" : "1",
+		"cleanliness" : "1",
+		"breakfast" : "1",
+		"lunch" : "1",
+		"dinner" : "1"
+		}
+		response = self.client.post(reverse("rating:rating"), data, follow=True)
+		#Assert
+		self.assertEquals(response.status_code, 200)
+		self.assertContains(response, "Thank you")
+		#Client Action
+		response = self.client.get(reverse("rating:read")+"?rfid=1&rollno=1", follow=True)
+		#Assert
+		self.assertEquals(response.status_code, 200)
+		self.assertContains(response, "You have already given feedback for this month. Come back next month :D")
 
 
 

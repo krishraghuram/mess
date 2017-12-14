@@ -74,7 +74,7 @@ class ReadView(View):
 
 		#Validate User
 		if not user.check_password(rfid): 
-			messages.error(request, "Roll Number or RFID incorrect. Did you tamper with your card?")
+			messages.error(request, "Roll Number or RFID incorrect")
 			return render(request, 'rating/error.html')
 		#Validate Profile
 		try:

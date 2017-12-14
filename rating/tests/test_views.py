@@ -124,8 +124,10 @@ class ReadTests(TestCase):
 
 
 	###########################################
-	###Profile Validation in ReadView
+	###Validation Tests in ReadView
 	###########################################
+	# def test_password(self):
+
 	def test_resident_hostel_empty(self):
 		#Client Action
 		profile = Profile(rollno="1", name="A", resident_hostel="", subscribed_hostel="Umiam")
@@ -162,7 +164,7 @@ class ReadTests(TestCase):
 		self.assertEquals(response.status_code, 200)
 		self.assertContains(response, "is not a valid choice.")
 
-
+	# def test_double_feedback(self):
 
 
 

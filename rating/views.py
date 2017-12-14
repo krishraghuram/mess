@@ -87,6 +87,12 @@ class ReadView(View):
 				for item in value:
 					messages.error(request, key + " : " + item)
 			return render(request, 'rating/error.html')
+		#Check if user already gave feedback for this month
+		temp = list(Activity.objects.filter(profile=profile))
+		temp = [i.timestamp.month for i in temp]
+		if datetime.datetime.now().month in temp:
+			messages.error(request, "You have already given feedback for this month. Come back next month :D")
+			return render(request, 'rating/error.html')
 
 		#Login the user
 		login(request, user)

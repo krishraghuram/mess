@@ -238,9 +238,9 @@ class RatingTests(TestCase):
 	###########################################
 	###Activity Validation Tests
 	###########################################
-	def test_rating_range(self):
+	def test_rating_range_wrong(self):
 		#Setup
-		n_test_cases = 1000
+		n_test_cases = 300
 		user = User.objects.create_user(username="1", password="password")
 		profile = Profile(user=user, rollno="1", name="A", resident_hostel="Umiam", subscribed_hostel="Umiam")
 		profile.save()
@@ -255,18 +255,39 @@ class RatingTests(TestCase):
 		import random
 		choices = random.sample(range(len(values)), n_test_cases)
 		values = [values[i] for i in choices]
-		for (index,i) in enumerate(values):
+		for i in values:
 			data = dict(zip(fields, i))
 			data = dict([(j,data[j]) for j in data if data[j] is not None])
 			self.client.login(username="1", password="password")
 			response = self.client.post(reverse("rating:rating"), data, follow=True)
-			if any(j in wrong_inputs for j in data.values()):
+			if len(data)<5 or any(j in wrong_inputs for j in data.values()):
 				self.assertEquals(response.status_code, 200)
 				self.assertContains(response, "Activity Validation Error")
 			elif len(data)==5 and all(j in correct_inputs for j in data.values()):
 				self.assertEquals(response.status_code, 200)
 				self.assertContains(response, "Thank you")
 
+	def test_rating_range_correct(self):
+		#Setup
+		n_test_cases = 100
+		user = User.objects.create_user(username="1", password="password")
+		profile = Profile(user=user, rollno="1", name="A", resident_hostel="Umiam", subscribed_hostel="Umiam")
+		profile.save()
+		
+		#Tests
+		fields = ["catering_and_punctuality", "cleanliness", "breakfast", "lunch", "dinner"]		
+		inputs = ['0','1','2','3','4','5']
+		import itertools
+		values = list(itertools.product(inputs, inputs, inputs, inputs, inputs))
+		import random
+		choices = random.sample(range(len(values)), n_test_cases)
+		values = [values[i] for i in choices]
+		for i in values:
+			data = dict(zip(fields, i))
+			self.client.login(username="1", password="password")
+			response = self.client.post(reverse("rating:rating"), data, follow=True)
+			self.assertEquals(response.status_code, 200)
+			self.assertContains(response, "Thank you")
 
 
 
@@ -278,7 +299,7 @@ class RatingTests(TestCase):
 
 
 
-class RatingTests(TestCase):
+class StartTests(TestCase):
 	def test_get(self):
 		#Test
 		response = self.client.get(reverse("rating:start"), follow=True)

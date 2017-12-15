@@ -84,9 +84,7 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
 			* FLUSH PRIVILEGES;
 	* Instructions for hostel systems
 		* Open django's settings.py
-		* In DATABASES variable, in the line 
-		`'HOST': 'localhost',   # Or an IP Address that your DB is hosted on`, replace `'localhost'` 
-		with the IP adress of the central server. 
+		* In DATABASES variable, in `'HOST': 'localhost'`, replace `'localhost'` with the IP adress of the central server. 
 
 11) Setup and test the django project
 	* Go to the project folder

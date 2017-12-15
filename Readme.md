@@ -71,13 +71,20 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
 	* Complete it and Test it before continuing!!!
 	* Also, quickstart to "git submodules" - https://git-scm.com/book/en/v2/Git-Tools-Submodules
 
-10) Install MariaDB and Create databases that will be used by django.
-	* sudo apt-get install mariadb-server libmariadbclient-dev
-	* sudo mysql -u root
-		* CREATE DATABASE mess;
-		* CREATE USER 'mess'@'localhost' IDENTIFIED BY 'mess';
-		* GRANT ALL PRIVILEGES ON mess . * TO 'mess'@'localhost';
-		* FLUSH PRIVILEGES;
+10) Configure database settings for the feedback system
+	* Firstly, let us understand the database architecture. 
+	We will run one instance of the feedback system on a central server. This will NOT be used for feedback, but for HAB staff to access and update the system. This central server will also host the database that will be used by all feedback systems.
+	Each hostel's feedback system will connect to this central database. Thus, the user and feedback data across all hostels will always be consistent.  
+	* Instructions for central system
+		* sudo apt-get install mariadb-server libmariadbclient-dev
+		* sudo mysql -u root
+			* CREATE DATABASE mess;
+			* CREATE USER 'mess'@'localhost' IDENTIFIED BY 'mess';
+			* GRANT ALL PRIVILEGES ON mess . * TO 'mess'@'localhost';
+			* FLUSH PRIVILEGES;
+	* Instructions for hostel systems
+		* Open django's settings.py
+		* In DATABASES variable, in the line `'HOST': 'localhost',   # Or an IP Address that your DB is hosted on`, replace `'localhost'` with the IP adress of the central server. 
 
 11) Setup and test the django project
 	* Go to the project folder

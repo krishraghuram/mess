@@ -20,6 +20,8 @@ hostels = (
 	("Married Scholars","Married Scholars"),
 )
 
+current_hostel = "Umiam"
+
 #The range of allowed values of ratings.
 #Note : The values rating_low and rating_high are included in allowed values.
 rating_low = 0

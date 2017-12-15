@@ -24,6 +24,7 @@ class ReadTests(TestCase):
 		self.assertContains(response, "Start")
 
 
+
 	###########################################
 	###User Profile Relation Tests
 	###########################################
@@ -195,6 +196,22 @@ class ReadTests(TestCase):
 		self.assertEquals(response.status_code, 200)
 		self.assertContains(response, "You have already given feedback for this month. Come back next month :D")
 
+	def test_subscribed_hostel_is_not_current_hostel(self):
+		#Setup
+		from rating import constants
+		hostels = dict(constants.hostels).values()
+		wrong_hostels = hostels
+		wrong_hostels.remove(constants.current_hostel)
+		for i in wrong_hostels:
+			#Client Action
+			profile = Profile(rollno="1", name="A", resident_hostel="Umiam", subscribed_hostel=i)
+			profile.save()
+			response = self.client.get(reverse("rating:read")+"?rfid=1&rollno=1", follow=True)
+			#Assert
+			self.assertEquals(response.status_code, 200)
+			self.assertContains(response, "You are giving feedback in wrong hostel")
+			#Cleanup
+			profile.delete()
 
 
 

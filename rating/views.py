@@ -87,12 +87,17 @@ class ReadView(View):
 				for item in value:
 					messages.error(request, key + " : " + item)
 			return render(request, 'rating/error.html')
+		#Check if user is giving feedback at his subscribed_hostel
+		if profile.subscribed_hostel != constants.current_hostel:
+			messages.error(request, "You are giving feedback in wrong hostel. Please visit "+profile.subscribed_hostel+" to give your feedback.")
+			return render(request, 'rating/error.html')
 		#Check if user already gave feedback for this month
 		temp = list(Activity.objects.filter(profile=profile))
 		temp = [i.timestamp.month for i in temp]
 		if datetime.datetime.now().month in temp:
 			messages.error(request, "You have already given feedback for this month. Come back next month :D")
 			return render(request, 'rating/error.html')
+
 
 		#Login the user
 		login(request, user)

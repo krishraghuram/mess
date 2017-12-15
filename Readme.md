@@ -81,6 +81,9 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
 
 11) Setup and test the django project
 	* Go to the project folder
+	* Setup current_hostel variable. This variable is used to ensure users can only give feedback at subscribed_hostel and not any other hostel.
+		* We need to setup which hostel we are working on.
+		* This is setup in rating/constants.py current_hostel
 	* sudo -E -H pip install -r requirements.txt
 	* Checkout the needed version(using git)	
 	* `python manage.py makemigrations`

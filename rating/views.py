@@ -14,7 +14,7 @@ from django.db import IntegrityError
 import datetime
 from mess import settings
 
-def get_card():
+def get_card(request):
 	try:
 		from MFRC522python import util
 		try:
@@ -39,8 +39,8 @@ class ReadView(View):
 			logout(request)
 
 		#Try to read card
-		card = get_card()
-		if messages.get_messages() is not None:
+		card = get_card(request)
+		if messages.get_messages(request) is not None:
 			return render(request, 'rating/error.html')
 		else:
 			(rfid,rollno) = card

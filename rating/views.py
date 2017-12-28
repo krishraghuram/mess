@@ -25,10 +25,10 @@ def get_card():
 				return (rfid, rollno)
 			else:
 				messages.error(request, "Could not read card. Try again later.")
-				return render(request, 'rating/error.html')
+				raise Exception("error")
 		except: #Any kind of exception
 			messages.error(request, "Error while reading card. Try once more.")
-			return render(request, 'rating/error.html')
+			raise Exception("error")
 	except: #Not running on R-Pi
 		return (None, None)
 
@@ -41,7 +41,10 @@ class ReadView(View):
 			logout(request)
 
 		#Try to read card
-		(rfid,rollno) = get_card()
+		try:
+			(rfid,rollno) = get_card()
+		except:
+			return render(request, 'rating/error.html')
 		#Purely for testing
 		if settings.DEBUG==True and rfid is None and rollno is None:
 			rfid = request.GET.get('rfid')

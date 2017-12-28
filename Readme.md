@@ -106,7 +106,7 @@ The guide also uses virtual environments, but we dont need to use virtual enviro
 	* Run `sudo -E -H pip install gunicorn`
 	* [The django deployment checklist](https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/)  
 	The following need to be set with appropriate values.
-		* TIME_ZONE - extremely important in checking if mess is open.
+		* TIME_ZONE
 		* STATIC_ROOT and STATIC_URL
 		* SECRET_KEY
 		* Ensure that database password is taken from environment variable, instead of passing it as cleartext in the settings file.

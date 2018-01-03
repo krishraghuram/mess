@@ -40,7 +40,8 @@ class ReadView(View):
 
 		#Try to read card
 		card = get_card(request)
-		if messages.get_messages(request) is not None:
+		storage = list(messages.get_messages(request))
+		if len(storage)!=0:
 			return render(request, 'rating/error.html')
 		else:
 			(rfid,rollno) = card

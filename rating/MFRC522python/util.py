@@ -42,8 +42,8 @@ def readcard(timeout=5):
 			#UID is a list of 4 elements
 			#Each element is 8 bit number represented in decimal. 
 			#That is, a number between 0-255            
-			rfid = uid
-
+			rfid = uid[0:4]
+			
 			# This is the default key for authentication
 			key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 		

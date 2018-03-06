@@ -22,7 +22,6 @@ def get_card(request):
 			if data and len(data)==2:
 				#Convert rfid from four numbers in the range 0-255
 				#To a 8 digit hex number
-				rfid = data[0]
 				rfid = [format(i, 'x') for i in data[0]] #format(n,'x') converts n to hexadecimal
 				rfid = ''.join(rfid)
 				rollno = data[1]

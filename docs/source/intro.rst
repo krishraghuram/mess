@@ -9,11 +9,3 @@ It is meant to run on a `Raspberry Pi <https://www.raspberrypi.org/>`_, using a 
 
 
 
-Key Features
-------------
-
-1. The choices of hardware and software allow for limitless functional scalability. 
-
-Functional `Scalability <https://en.wikipedia.org/wiki/Scalability>`_: The ability to enhance the system by adding new functionality at minimal effort.
-
-

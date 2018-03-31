@@ -14,7 +14,8 @@ RFID based Mess Feedback System
 
    .. These are the stuff that we documented in techboard website project
    intro
-   .. analysis
+   history
+   analysis
    .. arch
    .. design
    .. contri

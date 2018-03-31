@@ -16,7 +16,7 @@ RFID based Mess Feedback System
    intro
    history
    analysis
-   .. arch
+   arch
    .. design
    .. contri
    .. deployment

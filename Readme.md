@@ -9,7 +9,7 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
 	* Raspberry Pi 3
 	* 16 GB SD Card
 	* Power supply cable for Pi
-	* Screen for Rpi(Setup steps given for Waveshare 3.5 inch or Waveshare 7 inch screen)
+	* Screen for Rpi(Setup steps given for multiple screens - check below)
 	* MFRC522 RFID card reader
 	* HDMI Display, Keyboard and Mouse (For initial setup)
 
@@ -66,7 +66,7 @@ This Project is Licensed under the GNU GENERAL PUBLIC LICENSE Version 2
 	* `git submodule init`
 	* `git submodule update`
 	* `cd mess-rpisetup`
-	* Checkout branch `waveshare7` or `waveshare3.5` depending on the screen you want to use
+	* Checkout branch of the screen that you are using. Instructions are provided for Waveshare 3.5 Inch, Waveshare 7 Inch and Newhaven NHD-7.0-HDMI-N-RSXN-CTU Displays.
 	* Follow the instructions in the "Todo" file
 	* Complete it and Test it before continuing!!!
 	* Also, quickstart to "git submodules" - https://git-scm.com/book/en/v2/Git-Tools-Submodules
